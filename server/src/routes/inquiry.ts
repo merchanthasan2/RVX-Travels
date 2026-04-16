@@ -21,6 +21,7 @@ const inquirySchema = z.object({
     phone: z.string().optional().default('Not provided'),
     visaType: z.string().min(1),
     destination: z.string().min(1),
+    urgentService: z.boolean().optional().default(false),
     message: z.string().max(1000).optional().default(''),
     consent: z.boolean().optional().default(true),
     company: z.string().max(0).optional() // Honeypot: must be empty
@@ -37,6 +38,7 @@ const logInquiry = (data: any) => {
         timestamp: new Date().toISOString(),
         destination: data.destination,
         visaType: data.visaType,
+        urgentService: Boolean(data.urgentService),
         maskedEmail
     };
 

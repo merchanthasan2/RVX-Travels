@@ -18,6 +18,7 @@ export interface InquiryData {
     phone?: string;
     visaType: string;
     destination: string;
+    urgentService?: boolean;
     message: string;
     ip: string;
 }
@@ -196,6 +197,11 @@ function sendSmtp(msg: SmtpMessage): Promise<void> {
 export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     const adminTo  = process.env.MAIL_TO || 'info@rvxtravels.com';
+    const urgencyLabel = data.urgentService ? 'Yes - priority requested' : 'No';
+    const adminSubjectPrefix = data.urgentService ? 'Urgent Enquiry' : 'New Enquiry';
+    const userUrgencyLine = data.urgentService
+        ? '<p><strong>Urgent service requested:</strong> Yes. We will prioritize the review of your enquiry.</p>'
+        : '';
 
     // ── Admin notification ──────────────────────────────────────────
     const adminHtml = `
@@ -209,6 +215,7 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Email</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.email || 'Not provided'}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Destination</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.destination}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Service / Type</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.visaType}</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Urgent Service</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${urgencyLabel}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Message</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.message || '—'}</td></tr>
       <tr><td style="padding:10px;font-weight:bold;">Submitted (IST)</td><td style="padding:10px;">${timestamp}</td></tr>
     </table>
@@ -218,10 +225,10 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
   </div>
 </div>`;
 
-    const adminText = `New Enquiry\nName: ${data.name}\nEmail: ${data.email}\nDestination: ${data.destination}\nType: ${data.visaType}\nMessage: ${data.message}\nTime (IST): ${timestamp}`;
+    const adminText = `New Enquiry\nName: ${data.name}\nEmail: ${data.email}\nDestination: ${data.destination}\nType: ${data.visaType}\nUrgent Service: ${urgencyLabel}\nMessage: ${data.message}\nTime (IST): ${timestamp}`;
 
     // ── Send admin notification ─────────────────────────────────────
-    await sendSmtp({ to: adminTo, subject: `New Enquiry: ${data.destination} — ${data.visaType}`, html: adminHtml, text: adminText });
+    await sendSmtp({ to: adminTo, subject: `${adminSubjectPrefix}: ${data.destination} — ${data.visaType}`, html: adminHtml, text: adminText });
     console.log(`✅ Admin email sent to ${adminTo}`);
 
     // ── User auto-acknowledgement (only if email provided) ──────────
@@ -234,8 +241,9 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
   <div style="padding:24px;">
     <p>Hi ${data.name},</p>
     <p>Thank you for reaching out to <strong>Royal Visa Xpert</strong>. We have received your enquiry regarding <strong>${data.visaType}</strong> for <strong>${data.destination}</strong>.</p>
+    ${userUrgencyLine}
     <p>Our team will review your details and get back to you within <strong>one business day</strong>.</p>
-    <p>For urgent queries, you can also reach us on WhatsApp: <a href="https://wa.me/919833456675">+91 98334 56675</a></p>
+    <p>For urgent queries, you can also reach us on WhatsApp: <a href="https://wa.me/919594960707">+91 95949 60707</a></p>
     <br><p>Best regards,<br><strong>Royal Visa Xpert Team</strong></p>
   </div>
 </div>`;
@@ -244,7 +252,7 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
             to: data.email,
             subject: `We received your enquiry for ${data.destination} — Royal Visa Xpert`,
             html: userHtml,
-            text: `Hi ${data.name}, we received your enquiry for ${data.destination}. We'll be in touch within one business day.`
+            text: `Hi ${data.name}, we received your enquiry for ${data.destination}.${data.urgentService ? ' You requested urgent service and we will prioritize the review.' : ''} We'll be in touch within one business day.`
         });
         console.log(`✅ Ack email sent to ${data.email}`);
     }

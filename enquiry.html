@@ -24,7 +24,12 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">Royal Visa <span>Xpert</span></a>
+            <a href="index.html" class="logo" aria-label="Royal Visa Xpert home">
+                <span class="logo-mark">
+                    <img src="assets/images/RVX Logo.png" alt="Royal Visa Xpert logo">
+                </span>
+                <span class="logo-wordmark">Royal Visa <span>Xpert</span></span>
+            </a>
 
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -34,7 +39,7 @@
             </div>
 
             <div class="nav-actions">
-                <a href="https://wa.me/919833456675" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us">
+                <a href="whatsapp.html" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us" data-whatsapp="default">
                     <i data-lucide="message-circle"></i>
                 </a>
                 <a href="enquiry.html" class="btn btn-primary nav-enquiry-btn">Send Enquiry</a>
@@ -55,36 +60,36 @@
     </header>
 
     <!-- Enquiry Form Section -->
-    <section class="section-padding">
-        <div class="container" style="max-width: 800px;">
+    <section class="section-padding enquiry-section">
+        <div class="container enquiry-shell">
 
             <!-- Success State (hidden by default) -->
-            <div id="form-success" style="display: none; text-align: center; padding: 3rem 2rem; background: white; border-radius: 1rem; box-shadow: 0 4px 60px -10px rgba(0,0,0,0.1);">
-                <div style="width: 72px; height: 72px; background: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                    <i data-lucide="check-circle" style="width: 36px; height: 36px; color: #059669;"></i>
+            <div id="form-success" class="enquiry-status enquiry-status-success" style="display: none;">
+                <div class="enquiry-status-icon">
+                    <i data-lucide="check-circle" class="enquiry-status-icon-mark"></i>
                 </div>
-                <h2 style="color: #1e2a78; margin-bottom: 0.75rem;">Enquiry Received!</h2>
-                <p style="color: #64748b; margin-bottom: 1.5rem;">Thank you! We'll get back to you within one business day.</p>
-                <p style="color: #64748b; margin-bottom: 2rem;">For faster response, you can also reach us on WhatsApp:</p>
-                <a href="https://wa.me/919833456675?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20visa%20services"
-                   target="_blank" rel="noopener noreferrer"
-                   class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <h2 class="enquiry-status-title">Enquiry Received!</h2>
+                <p class="enquiry-status-copy">Thank you! We'll get back to you within one business day.</p>
+                <p class="enquiry-status-copy enquiry-status-copy-last">For faster response, you can also reach us on WhatsApp:</p>
+                <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                   rel="noopener noreferrer"
+                   class="btn btn-primary enquiry-status-btn">
                     <i data-lucide="message-circle"></i> Chat on WhatsApp
                 </a>
             </div>
 
             <!-- Error State (hidden by default) -->
-            <div id="form-error" style="display: none; background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; color: #dc2626;">
+            <div id="form-error" class="enquiry-status enquiry-status-error" style="display: none;">
                 <strong>Something went wrong.</strong> Please try again or message us on WhatsApp.
             </div>
 
             <!-- The Form -->
-            <div id="form-container" class="glass-panel" style="padding: 2.5rem; border-radius: 1rem; background: white; box-shadow: 0 4px 60px -10px rgba(0,0,0,0.1);">
+            <div id="form-container" class="glass-panel enquiry-card">
                 <form id="enquiry-form">
                     <!-- Honeypot (anti-spam) -->
                     <input type="text" name="company" style="display:none;" tabindex="-1" autocomplete="off">
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="enquiry-grid">
                         <div class="form-group">
                             <label for="name">Full Name</label>
                             <input type="text" id="name" name="name" placeholder="Enter your full name" required>
@@ -95,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="enquiry-grid">
                         <div class="form-group">
                             <label for="destination">Destination / Service</label>
                             <input type="text" id="destination" name="destination" placeholder="Where are you planning to go?" required>
@@ -105,31 +110,40 @@
                             <select id="visa-type" name="visaType">
                                 <option value="Tourist Visa">Tourist Visa</option>
                                 <option value="Business Visa">Business Visa</option>
-                                <option value="Visit Visa">Visit / Personal Visa</option>
-                                <option value="Transit Visa">Transit Visa</option>
+                                <option value="Family Visit Visa">Family Visit Visa</option>
+                                <option value="Urgent Appointment">Urgent Appointment</option>
                                 <option value="Holiday Tour">Holiday Tour</option>
                                 <option value="Destination Wedding">Destination Wedding</option>
                                 <option value="International License">International Driving License</option>
-                                <option value="International SIM">International SIM Card</option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 2rem;">
+                    <div class="enquiry-urgency">
+                        <label class="enquiry-checkbox" for="urgent-service">
+                            <input type="checkbox" id="urgent-service" name="urgentService">
+                            <span class="enquiry-checkbox-copy">
+                                <span class="enquiry-checkbox-title">Urgent Service Required</span>
+                                <span class="enquiry-checkbox-text">Select this if you need priority handling for your visa application.</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="form-group enquiry-message-group">
                         <label for="message">Your Message / Requirements</label>
                         <textarea id="message" name="message" rows="5" placeholder="Include any specific questions or additional details..."></textarea>
                     </div>
 
-                    <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                    <button type="submit" id="submit-btn" class="btn btn-primary enquiry-submit-btn">
                         Submit Enquiry
                     </button>
 
-                    <p style="text-align: center; margin-top: 1.25rem; color: #94a3b8; font-size: 0.85rem;">
+                    <p class="enquiry-help-note">
                         Prefer WhatsApp? 
-                        <a href="https://wa.me/919833456675?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20visa%20services"
-                           target="_blank" rel="noopener noreferrer"
-                           style="color: #25d366; font-weight: 600;">Chat with us directly ↗</a>
+                        <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                           rel="noopener noreferrer"
+                           class="enquiry-help-link">Chat with us directly</a>
                     </p>
                 </form>
             </div>
@@ -156,8 +170,8 @@
                 <h4>Get in Touch</h4>
                 <p><i data-lucide="mail"></i> <span id="footer-email">Loading...</span></p>
                 <p style="margin-top: 0.75rem;">
-                    <a href="https://wa.me/919833456675?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20visa%20services"
-                       target="_blank" rel="noopener noreferrer"
+                    <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                       rel="noopener noreferrer"
                        class="btn btn-blue" style="width: 100%;">
                         <i data-lucide="message-circle" style="width:1.25rem;height:1.25rem;"></i> WhatsApp Us
                     </a>
@@ -189,7 +203,8 @@
                 'Tours': 'Holiday Tour',
                 'License': 'International License',
                 'SIM': 'International SIM',
-                'Wedding': 'Destination Wedding'
+                'Wedding': 'Destination Wedding',
+                'Urgent': 'Urgent Appointment'
             };
             const destField = document.getElementById('destination');
             const typeField = document.getElementById('visa-type');
@@ -210,6 +225,7 @@
                 email: document.getElementById('email').value.trim(),
                 destination: document.getElementById('destination').value.trim(),
                 visaType: document.getElementById('visa-type').value,
+                urgentService: document.getElementById('urgent-service').checked,
                 message: document.getElementById('message').value.trim(),
                 company: document.querySelector('input[name="company"]').value, // honeypot
                 consent: true
@@ -240,3 +256,4 @@
 </body>
 
 </html>
+

@@ -508,8 +508,8 @@ const visaData = {
         }
     ],
     settings: {
-        whatsapp: "919833456675",
-        phone: "+91 98334 56675",
+        whatsapp: "919594960707",
+        phone: "+91 95949 60707",
         email: "info@rvxtravels.com",
         hours: "Mon-Sat: 10:00 AM - 7:00 PM IST",
     }

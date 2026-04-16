@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Royal Visa Xpert - Global Visas Made Simple</title>
     <meta name="description"
-        content="Tourist, Visit & Business visas for popular destinations. Handled end-to-end by Royal Visa Xpert. Simple, Fast, Reliable.">
+        content="Tourist, Family Visit & Business visas for popular destinations. Handled end-to-end by Royal Visa Xpert. Simple, Fast, Reliable.">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,12 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">Royal Visa <span>Xpert</span></a>
+            <a href="index.html" class="logo" aria-label="Royal Visa Xpert home">
+                <span class="logo-mark">
+                    <img src="assets/images/RVX Logo.png" alt="Royal Visa Xpert logo">
+                </span>
+                <span class="logo-wordmark">Royal Visa <span>Xpert</span></span>
+            </a>
 
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -37,7 +42,7 @@
             </div>
 
             <div class="nav-actions">
-                <a href="https://wa.me/919833456675" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us">
+                <a href="whatsapp.html" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us" data-whatsapp="default">
                     <i data-lucide="message-circle"></i>
                 </a>
                 <a href="enquiry.html" class="btn btn-primary nav-enquiry-btn">Send Enquiry</a>
@@ -53,8 +58,9 @@
     <header class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
+            <div class="hero-brand">Royal Visa Xpert</div>
             <h1 class="hero-title">Global Visas.<br>Simple, Fast, Reliable.</h1>
-            <p class="hero-subtitle">Tourist, Visit & Business visas for popular destinations — handled end-to-end by Royal Visa Xpert.</p>
+            <p class="hero-subtitle">Tourist, Family Visit & Business visas for popular destinations — handled end-to-end by Royal Visa Xpert.</p>
             <div class="hero-buttons">
                 <a href="visas.html" class="btn btn-primary">Explore Visas</a>
                 <a href="enquiry.html" class="btn btn-outline" style="border-width:2px; padding:0.875rem 2.5rem;">Contact Us</a>
@@ -202,11 +208,11 @@
         <div class="container text-center">
             <h2>Ready to Travel?</h2>
             <p>Get your visa approved with Royal Visa Xpert today.</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <div class="cta-actions">
                 <a href="enquiry.html" class="btn btn-primary btn-lg">Send Enquiry</a>
-                <a href="https://wa.me/919833456675?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20visa%20services"
-                   target="_blank" rel="noopener noreferrer"
-                   class="btn btn-lg" style="background: #25d366; color: white; border: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                   rel="noopener noreferrer"
+                   class="btn btn-lg cta-whatsapp-btn">
                     <i data-lucide="message-circle"></i> WhatsApp Us
                 </a>
             </div>
@@ -233,8 +239,8 @@
                 <h4>Get in Touch</h4>
                 <p><i data-lucide="mail"></i> <span id="footer-email">Loading...</span></p>
                 <p style="margin-top: 0.75rem;">
-                    <a href="https://wa.me/919833456675?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20visa%20services"
-                       target="_blank" rel="noopener noreferrer"
+                    <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                       rel="noopener noreferrer"
                        style="color: #25d366; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                         <i data-lucide="message-circle"></i> WhatsApp Us
                     </a>

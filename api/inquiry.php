@@ -61,6 +61,7 @@ $name = trim($data['name'] ?? '');
 $email = trim($data['email'] ?? '');
 $destination = trim($data['destination'] ?? '');
 $visaType = trim($data['visaType'] ?? '');
+$urgentService = !empty($data['urgentService']);
 $message = trim($data['message'] ?? '');
 
 if (empty($name) || empty($destination) || empty($visaType)) {
@@ -69,13 +70,16 @@ if (empty($name) || empty($destination) || empty($visaType)) {
 }
 
 // 6. Build Email Content
-$subject = "New Visa Enquiry: $destination ($visaType)";
+$urgencyLabel = $urgentService ? 'Yes - priority requested' : 'No';
+$subjectPrefix = $urgentService ? 'Urgent Visa Enquiry' : 'New Visa Enquiry';
+$subject = "$subjectPrefix: $destination ($visaType)";
 $email_body = "
 <h2>New Visa Enquiry Received</h2>
 <p><strong>Name:</strong> $name</p>
 <p><strong>Email:</strong> $email</p>
 <p><strong>Destination:</strong> $destination</p>
 <p><strong>Visa Type:</strong> $visaType</p>
+<p><strong>Urgent Service:</strong> $urgencyLabel</p>
 <p><strong>Message:</strong><br>$message</p>
 <hr>
 <p><small>Sent from Royal Visa Xpert Website</small></p>
