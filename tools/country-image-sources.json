@@ -71,10 +71,10 @@
     },
     "greece": {
         "name": "Greece",
-        "heroSource": "https://upload.wikimedia.org/wikipedia/commons/b/bf/2011_Dimos_Thiras.png",
-        "heroBackupSource": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/2011_Dimos_Thiras.png/330px-2011_Dimos_Thiras.png",
-        "cardSource": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/2011_Dimos_Thiras.png/330px-2011_Dimos_Thiras.png",
-        "cardBackupSource": "https://upload.wikimedia.org/wikipedia/commons/b/bf/2011_Dimos_Thiras.png"
+        "heroSource": "https://images.pexels.com/photos/33816350/pexels-photo-33816350/free-photo-of-erechtheion-temple-with-caryatids-in-athens.jpeg",
+        "heroBackupSource": "https://images.pexels.com/photos/33816350/pexels-photo-33816350/free-photo-of-erechtheion-temple-with-caryatids-in-athens.jpeg",
+        "cardSource": "https://images.pexels.com/photos/33816350/pexels-photo-33816350/free-photo-of-erechtheion-temple-with-caryatids-in-athens.jpeg",
+        "cardBackupSource": "https://images.pexels.com/photos/33816350/pexels-photo-33816350/free-photo-of-erechtheion-temple-with-caryatids-in-athens.jpeg"
     },
     "italy": {
         "name": "Italy",
