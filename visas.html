@@ -68,9 +68,15 @@
 
             <!-- Recommended Section -->
             <div id="recommended-section" class="recommended-section">
-                <div class="section-header">
-                    <span class="recommended-label">Most Popular</span>
-                    <h2 style="font-size: 1.75rem;">Top Destinations</h2>
+                <div class="section-header catalog-topbar">
+                    <div class="catalog-topbar-copy">
+                        <span class="recommended-label">Most Popular</span>
+                        <h2 style="font-size: 1.75rem;">Top Destinations</h2>
+                    </div>
+                    <div class="search-box catalog-search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="search-input" placeholder="Search country name...">
+                    </div>
                 </div>
                 <div id="recommended-grid" class="recommended-grid" style="margin-bottom: 3rem;">
                     <!-- Populated by JS -->
@@ -99,10 +105,6 @@
                     </select>
                 </div>
 
-                <div class="search-box">
-                    <i data-lucide="search"></i>
-                    <input type="text" id="search-input" placeholder="Search country name...">
-                </div>
             </div>
 
             <!-- Grid -->

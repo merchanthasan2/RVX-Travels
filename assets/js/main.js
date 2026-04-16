@@ -551,6 +551,42 @@ function initVisaCatalog() {
     if (!grid || !visaData) return;
 
     const countries = [...visaData.countries];
+    const initialParams = new URLSearchParams(window.location.search);
+
+    function normalizeCatalogTerm(value) {
+        return (value || '')
+            .toString()
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function syncCatalogQueryParams(searchTerm, continent, countrySlug) {
+        const params = new URLSearchParams(window.location.search);
+
+        if (searchTerm) {
+            params.set('search', searchTerm);
+        } else {
+            params.delete('search');
+        }
+
+        if (continent && continent !== 'all') {
+            params.set('continent', continent);
+        } else {
+            params.delete('continent');
+        }
+
+        if (countrySlug && countrySlug !== 'all') {
+            params.set('country', countrySlug);
+        } else {
+            params.delete('country');
+        }
+
+        const query = params.toString();
+        const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+        window.history.replaceState({}, '', nextUrl);
+    }
 
     function renderGrid(data, targetGrid) {
         targetGrid.innerHTML = '';
@@ -605,7 +641,8 @@ function initVisaCatalog() {
     }
 
     function filterData() {
-        const searchTerm = searchInput.value.toLowerCase();
+        const rawSearchTerm = searchInput ? searchInput.value : '';
+        const searchTerm = normalizeCatalogTerm(rawSearchTerm);
         const continent = continentFilter ? continentFilter.value : 'all';
         const countrySlug = countryFilter ? countryFilter.value : 'all';
 
@@ -616,13 +653,18 @@ function initVisaCatalog() {
         }
 
         const filtered = countries.filter(country => {
-            const matchesSearch = country.name.toLowerCase().includes(searchTerm);
+            const normalizedName = normalizeCatalogTerm(country.name);
+            const normalizedSlug = normalizeCatalogTerm(country.slug);
+            const matchesSearch = searchTerm === ''
+                || normalizedName.includes(searchTerm)
+                || normalizedSlug.includes(searchTerm);
             const matchesContinent = continent === 'all' || country.continent === continent;
             const matchesCountry = countrySlug === 'all' || country.slug === countrySlug;
 
             return matchesSearch && matchesContinent && matchesCountry;
         });
 
+        syncCatalogQueryParams(rawSearchTerm.trim(), continent, countrySlug);
         renderGrid(filtered, grid);
     }
 
@@ -646,8 +688,42 @@ function initVisaCatalog() {
         filterData();
     }
 
+    function applyInitialCatalogFilters() {
+        if (continentFilter) {
+            const requestedContinent = initialParams.get('continent');
+            const hasContinentOption = requestedContinent
+                && Array.from(continentFilter.options).some(option => option.value === requestedContinent);
+
+            if (hasContinentOption) {
+                continentFilter.value = requestedContinent;
+            }
+        }
+
+        if (searchInput) {
+            searchInput.value = initialParams.get('search') || '';
+        }
+
+        updateCountryOptions();
+
+        if (countryFilter) {
+            const requestedCountry = initialParams.get('country');
+            const hasCountryOption = requestedCountry
+                && Array.from(countryFilter.options).some(option => option.value === requestedCountry);
+
+            if (hasCountryOption) {
+                countryFilter.value = requestedCountry;
+            }
+        }
+
+        filterData();
+    }
+
     // Event Listeners
-    if (searchInput) searchInput.addEventListener('input', filterData);
+    if (searchInput) {
+        ['input', 'search', 'change', 'keyup'].forEach(eventName => {
+            searchInput.addEventListener(eventName, filterData);
+        });
+    }
     if (continentFilter) continentFilter.addEventListener('change', updateCountryOptions);
     if (countryFilter) countryFilter.addEventListener('change', filterData);
 
@@ -660,7 +736,11 @@ function initVisaCatalog() {
     }
 
     renderGrid(countries, grid);
-    if (countryFilter) updateCountryOptions(); // Populate country dropdown initially
+    if (countryFilter) {
+        applyInitialCatalogFilters();
+    } else {
+        filterData();
+    }
 
     // Modal Close Listener
     const modal = document.getElementById('country-modal');
