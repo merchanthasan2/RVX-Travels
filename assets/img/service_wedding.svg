@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Destination Wedding</title>
+  <desc id="desc">Stylized beach wedding scene with floral arch, sea, and sunset sky.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fbe7d6"/>
+      <stop offset="45%" stop-color="#f7c9a8"/>
+      <stop offset="100%" stop-color="#f3a889"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#64b9c9"/>
+      <stop offset="100%" stop-color="#2f7f98"/>
+    </linearGradient>
+    <linearGradient id="sand" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#f1d8b0"/>
+      <stop offset="100%" stop-color="#e7c08c"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#5b2b2b" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#sky)"/>
+  <circle cx="940" cy="160" r="72" fill="#fff4de" opacity="0.86"/>
+  <rect y="360" width="1200" height="220" fill="url(#sea)"/>
+  <path d="M0 560C122 520 227 512 355 536C476 557 590 610 723 610C841 610 972 561 1200 532V720H0Z" fill="url(#sand)"/>
+
+  <g opacity="0.34">
+    <path d="M40 426C133 412 225 412 326 430" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
+    <path d="M458 452C552 438 652 438 750 454" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
+    <path d="M834 420C920 406 1011 405 1116 426" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <path d="M438 487C454 422 481 367 520 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round"/>
+    <path d="M762 487C746 422 719 367 680 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round"/>
+    <path d="M520 323C564 295 631 290 680 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M479 497H721" stroke="#8a5b3d" stroke-width="14" stroke-linecap="round"/>
+
+    <g fill="#f7f1eb">
+      <circle cx="523" cy="324" r="26"/>
+      <circle cx="678" cy="324" r="26"/>
+    </g>
+
+    <g fill="#ef7f87">
+      <circle cx="482" cy="356" r="20"/>
+      <circle cx="515" cy="289" r="18"/>
+      <circle cx="553" cy="314" r="20"/>
+      <circle cx="643" cy="312" r="20"/>
+      <circle cx="685" cy="289" r="18"/>
+      <circle cx="720" cy="355" r="20"/>
+    </g>
+
+    <g fill="#ffd4dc">
+      <circle cx="515" cy="347" r="16"/>
+      <circle cx="562" cy="286" r="15"/>
+      <circle cx="638" cy="287" r="15"/>
+      <circle cx="686" cy="347" r="16"/>
+    </g>
+
+    <g fill="#6ba36f">
+      <ellipse cx="498" cy="332" rx="12" ry="22" transform="rotate(-36 498 332)"/>
+      <ellipse cx="537" cy="302" rx="10" ry="20" transform="rotate(22 537 302)"/>
+      <ellipse cx="663" cy="301" rx="10" ry="20" transform="rotate(-22 663 301)"/>
+      <ellipse cx="703" cy="332" rx="12" ry="22" transform="rotate(36 703 332)"/>
+    </g>
+  </g>
+
+  <g transform="translate(550 480)">
+    <path d="M0 0C16 -44 24 -95 22 -150" stroke="#4b3b37" stroke-width="8" stroke-linecap="round"/>
+    <path d="M46 0C31 -44 23 -95 24 -150" stroke="#4b3b37" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="11" cy="-165" r="18" fill="#2d2422"/>
+    <circle cx="34" cy="-165" r="18" fill="#2d2422"/>
+    <path d="M-18 4C-9 -42 2 -84 14 -126C29 -84 39 -42 49 4Z" fill="#f7f4ef"/>
+    <path d="M16 -133C36 -103 48 -60 51 3" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+    <path d="M23 0C31 -34 41 -63 53 -87C66 -63 76 -34 83 0Z" fill="#314f88"/>
+  </g>
+
+  <text x="72" y="616" fill="#ffffff" font-family="Poppins, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="1">Destination Wedding</text>
+  <text x="76" y="664" fill="#fff3eb" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500" opacity="0.95">Beachfront ceremonies, curated travel, and guest handling</text>
+</svg>
