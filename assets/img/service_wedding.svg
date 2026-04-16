@@ -1,81 +1,126 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
   <title id="title">Destination Wedding</title>
-  <desc id="desc">Stylized beach wedding scene with floral arch, sea, and sunset sky.</desc>
+  <desc id="desc">Romantic seaside wedding overlooking an exotic cliffside coastal town with blue water and white villas.</desc>
   <defs>
     <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="#fbe7d6"/>
-      <stop offset="45%" stop-color="#f7c9a8"/>
-      <stop offset="100%" stop-color="#f3a889"/>
+      <stop offset="0%" stop-color="#f9d7c6"/>
+      <stop offset="42%" stop-color="#f7b89b"/>
+      <stop offset="100%" stop-color="#e88a73"/>
     </linearGradient>
     <linearGradient id="sea" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="#64b9c9"/>
-      <stop offset="100%" stop-color="#2f7f98"/>
+      <stop offset="0%" stop-color="#79d6e7"/>
+      <stop offset="100%" stop-color="#23799b"/>
     </linearGradient>
-    <linearGradient id="sand" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0%" stop-color="#f1d8b0"/>
-      <stop offset="100%" stop-color="#e7c08c"/>
+    <linearGradient id="cliff" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#c78f68"/>
+      <stop offset="100%" stop-color="#9b6247"/>
+    </linearGradient>
+    <linearGradient id="terrace" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#f7efe5"/>
+      <stop offset="100%" stop-color="#ebdccb"/>
+    </linearGradient>
+    <linearGradient id="dress" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fffdfb"/>
+      <stop offset="100%" stop-color="#efe6dd"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#5b2b2b" flood-opacity="0.18"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#3d1b16" flood-opacity="0.18"/>
     </filter>
   </defs>
 
   <rect width="1200" height="720" fill="url(#sky)"/>
-  <circle cx="940" cy="160" r="72" fill="#fff4de" opacity="0.86"/>
-  <rect y="360" width="1200" height="220" fill="url(#sea)"/>
-  <path d="M0 560C122 520 227 512 355 536C476 557 590 610 723 610C841 610 972 561 1200 532V720H0Z" fill="url(#sand)"/>
+  <circle cx="926" cy="148" r="78" fill="#fff0d7" opacity="0.92"/>
+  <rect y="275" width="1200" height="260" fill="url(#sea)"/>
 
-  <g opacity="0.34">
-    <path d="M40 426C133 412 225 412 326 430" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
-    <path d="M458 452C552 438 652 438 750 454" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
-    <path d="M834 420C920 406 1011 405 1116 426" stroke="#d4f0f7" stroke-width="6" stroke-linecap="round"/>
+  <g opacity="0.38" stroke="#dff7ff" stroke-width="7" stroke-linecap="round">
+    <path d="M56 358C151 345 245 345 351 364"/>
+    <path d="M426 395C522 383 624 384 722 401"/>
+    <path d="M804 347C910 333 1012 334 1141 356"/>
   </g>
+
+  <path d="M0 418C150 409 265 405 367 361C436 331 488 282 560 250C621 223 696 212 785 225C876 238 963 286 1040 329C1118 373 1165 389 1200 394V720H0Z" fill="url(#cliff)"/>
+
+  <g opacity="0.98">
+    <rect x="648" y="241" width="96" height="74" rx="8" fill="#fffaf4"/>
+    <rect x="760" y="214" width="112" height="88" rx="10" fill="#fffaf4"/>
+    <rect x="863" y="264" width="86" height="69" rx="8" fill="#fffaf4"/>
+    <rect x="934" y="229" width="102" height="80" rx="9" fill="#fffaf4"/>
+    <rect x="706" y="296" width="84" height="68" rx="8" fill="#fef8f1"/>
+    <rect x="815" y="308" width="95" height="76" rx="8" fill="#fef8f1"/>
+    <rect x="937" y="302" width="110" height="86" rx="9" fill="#fff7ef"/>
+
+    <path d="M639 241L696 202L753 241Z" fill="#5a88bd"/>
+    <path d="M747 214L816 166L885 214Z" fill="#4274ac"/>
+    <path d="M854 264L906 228L958 264Z" fill="#5c8ec3"/>
+    <path d="M923 229L986 185L1049 229Z" fill="#4a79b2"/>
+    <path d="M698 296L748 259L798 296Z" fill="#6a9dc8"/>
+    <path d="M803 308L862 265L921 308Z" fill="#4f80b7"/>
+    <path d="M928 302L992 255L1056 302Z" fill="#6b9ac3"/>
+
+    <g fill="#e2b879">
+      <rect x="670" y="270" width="18" height="45" rx="5"/>
+      <rect x="790" y="245" width="20" height="57" rx="5"/>
+      <rect x="890" y="288" width="16" height="45" rx="5"/>
+      <rect x="969" y="257" width="19" height="52" rx="5"/>
+      <rect x="728" y="321" width="16" height="43" rx="5"/>
+      <rect x="853" y="334" width="17" height="50" rx="5"/>
+      <rect x="976" y="330" width="20" height="58" rx="5"/>
+    </g>
+  </g>
+
+  <path d="M0 571C132 542 235 524 356 535C487 547 583 592 733 590C897 587 1035 544 1200 503V720H0Z" fill="#f0d3b1"/>
+  <path d="M0 620C130 598 265 594 404 615C539 635 667 667 810 661C964 654 1076 625 1200 588V720H0Z" fill="#e8c299"/>
 
   <g filter="url(#shadow)">
-    <path d="M438 487C454 422 481 367 520 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round"/>
-    <path d="M762 487C746 422 719 367 680 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round"/>
-    <path d="M520 323C564 295 631 290 680 323" stroke="#8a5b3d" stroke-width="18" stroke-linecap="round" fill="none"/>
-    <path d="M479 497H721" stroke="#8a5b3d" stroke-width="14" stroke-linecap="round"/>
+    <rect x="197" y="388" width="486" height="188" rx="26" fill="url(#terrace)"/>
+    <path d="M197 553H683V584C683 604 666 620 645 620H235C214 620 197 604 197 584Z" fill="#d9c7b6"/>
+    <path d="M219 412H661" stroke="#ffffff" stroke-width="5" opacity="0.72"/>
+    <path d="M234 442H646" stroke="#ffffff" stroke-width="3" opacity="0.48"/>
 
-    <g fill="#f7f1eb">
-      <circle cx="523" cy="324" r="26"/>
-      <circle cx="678" cy="324" r="26"/>
+    <path d="M322 482C344 416 380 362 429 318" stroke="#9a6c4f" stroke-width="18" stroke-linecap="round"/>
+    <path d="M558 482C536 416 500 362 451 318" stroke="#9a6c4f" stroke-width="18" stroke-linecap="round"/>
+    <path d="M429 318C451 300 484 290 516 290C548 290 581 300 603 318" stroke="#9a6c4f" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M292 493H588" stroke="#9a6c4f" stroke-width="14" stroke-linecap="round"/>
+
+    <g fill="#fff6ef">
+      <circle cx="430" cy="318" r="28"/>
+      <circle cx="603" cy="318" r="28"/>
     </g>
 
-    <g fill="#ef7f87">
-      <circle cx="482" cy="356" r="20"/>
-      <circle cx="515" cy="289" r="18"/>
-      <circle cx="553" cy="314" r="20"/>
-      <circle cx="643" cy="312" r="20"/>
-      <circle cx="685" cy="289" r="18"/>
-      <circle cx="720" cy="355" r="20"/>
+    <g fill="#ff8fa8">
+      <circle cx="379" cy="355" r="22"/>
+      <circle cx="420" cy="286" r="18"/>
+      <circle cx="467" cy="313" r="20"/>
+      <circle cx="560" cy="312" r="20"/>
+      <circle cx="607" cy="286" r="18"/>
+      <circle cx="650" cy="355" r="22"/>
     </g>
 
-    <g fill="#ffd4dc">
-      <circle cx="515" cy="347" r="16"/>
-      <circle cx="562" cy="286" r="15"/>
-      <circle cx="638" cy="287" r="15"/>
-      <circle cx="686" cy="347" r="16"/>
+    <g fill="#ffd6de">
+      <circle cx="414" cy="346" r="16"/>
+      <circle cx="478" cy="286" r="14"/>
+      <circle cx="547" cy="286" r="14"/>
+      <circle cx="615" cy="346" r="16"/>
     </g>
 
-    <g fill="#6ba36f">
-      <ellipse cx="498" cy="332" rx="12" ry="22" transform="rotate(-36 498 332)"/>
-      <ellipse cx="537" cy="302" rx="10" ry="20" transform="rotate(22 537 302)"/>
-      <ellipse cx="663" cy="301" rx="10" ry="20" transform="rotate(-22 663 301)"/>
-      <ellipse cx="703" cy="332" rx="12" ry="22" transform="rotate(36 703 332)"/>
+    <g fill="#7fb174">
+      <ellipse cx="393" cy="331" rx="11" ry="22" transform="rotate(-32 393 331)"/>
+      <ellipse cx="447" cy="301" rx="10" ry="20" transform="rotate(22 447 301)"/>
+      <ellipse cx="578" cy="301" rx="10" ry="20" transform="rotate(-22 578 301)"/>
+      <ellipse cx="635" cy="331" rx="11" ry="22" transform="rotate(32 635 331)"/>
     </g>
   </g>
 
-  <g transform="translate(550 480)">
-    <path d="M0 0C16 -44 24 -95 22 -150" stroke="#4b3b37" stroke-width="8" stroke-linecap="round"/>
-    <path d="M46 0C31 -44 23 -95 24 -150" stroke="#4b3b37" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="11" cy="-165" r="18" fill="#2d2422"/>
-    <circle cx="34" cy="-165" r="18" fill="#2d2422"/>
-    <path d="M-18 4C-9 -42 2 -84 14 -126C29 -84 39 -42 49 4Z" fill="#f7f4ef"/>
-    <path d="M16 -133C36 -103 48 -60 51 3" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
-    <path d="M23 0C31 -34 41 -63 53 -87C66 -63 76 -34 83 0Z" fill="#314f88"/>
+  <g transform="translate(408 504)" filter="url(#shadow)">
+    <path d="M0 0C14 -40 21 -84 20 -131" stroke="#493732" stroke-width="8" stroke-linecap="round"/>
+    <path d="M42 0C29 -40 22 -84 22 -131" stroke="#493732" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="10" cy="-145" r="17" fill="#2e2522"/>
+    <circle cx="33" cy="-145" r="17" fill="#2e2522"/>
+    <path d="M-16 3C-7 -39 3 -80 15 -118C31 -80 41 -39 51 3Z" fill="url(#dress)"/>
+    <path d="M18 -124C40 -93 52 -53 55 3" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.84"/>
+    <path d="M24 3C31 -30 40 -58 52 -82C66 -59 77 -31 85 3Z" fill="#315389"/>
   </g>
 
-  <text x="72" y="616" fill="#ffffff" font-family="Poppins, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="1">Destination Wedding</text>
-  <text x="76" y="664" fill="#fff3eb" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500" opacity="0.95">Beachfront ceremonies, curated travel, and guest handling</text>
+  <text x="70" y="618" fill="#ffffff" font-family="Poppins, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="1">Destination Wedding</text>
+  <text x="74" y="666" fill="#fff5eb" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500" opacity="0.97">Coastal celebrations, guest travel, and seaside ceremonies in dream locations</text>
 </svg>

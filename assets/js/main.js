@@ -1083,7 +1083,10 @@ function initForms() {
     if (serviceParam && destSelect) {
         const serviceLabel = serviceParam === 'Tours' ? 'Holiday Tours' : 
                            serviceParam === 'License' ? 'International License' : 
-                           serviceParam === 'SIM' ? 'International SIM Card' : serviceParam;
+                           serviceParam === 'Wedding' ? 'Destination Wedding' :
+                           serviceParam === 'Urgent' ? 'Urgent Appointment' :
+                           serviceParam === 'SIM' ? 'Other' :
+                           serviceParam;
         
         const exists = Array.from(destSelect.options).some(opt => opt.value === serviceLabel);
         if (!exists) {
