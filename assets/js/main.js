@@ -2,6 +2,24 @@ function formatVisaNote(note) {
     return note === 'Visit' ? 'Family Visit' : note;
 }
 
+function getStandardVisaNotes() {
+    return ['Tourist', 'Family Visit', 'Business'];
+}
+
+function getCountryVisaNotes() {
+    return getStandardVisaNotes();
+}
+
+function isSchengenVisaCountry(country) {
+    return Boolean(country && Array.isArray(country.visaNotes) && country.visaNotes.includes('Schengen Visa'));
+}
+
+function getCountryImageBadgeMarkup(country) {
+    if (!isSchengenVisaCountry(country)) return '';
+
+    return '<span class="country-image-badge">Schengen Visa</span>';
+}
+
 function buildWhatsAppLinks(preset) {
     const phone = ['91', '95949', '60707'].join('');
     const presets = {
@@ -463,13 +481,14 @@ function initVisaCatalog() {
             const card = document.createElement('div');
             card.classList.add('country-card');
             
-            const tagsHtml = country.visaNotes.map(note =>
+            const tagsHtml = getCountryVisaNotes(country).map(note =>
                 `<span class="visa-tag">${formatVisaNote(note)}</span>`
             ).join('');
 
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${country.cardImage}" alt="${country.name} scenic view" loading="lazy" referrerpolicy="no-referrer">
+                    ${getCountryImageBadgeMarkup(country)}
                 </div>
                 <div class="card-content">
                     <div class="card-header">
@@ -590,7 +609,7 @@ function openCountryModal(country) {
 
     // Tags
     const tagsContainer = document.getElementById('modal-visa-tags');
-    tagsContainer.innerHTML = country.visaNotes.map(note =>
+    tagsContainer.innerHTML = getCountryVisaNotes(country).map(note =>
         `<span class="visa-tag">${formatVisaNote(note)}</span>`
     ).join('');
 
@@ -699,7 +718,7 @@ function initCountryDetail() {
 
     // Visa Types
     const visaTypesList = document.getElementById('visa-types-list');
-    visaTypesList.innerHTML = country.visaNotes.map(note =>
+    visaTypesList.innerHTML = getCountryVisaNotes(country).map(note =>
         `<span class="visa-tag">${formatVisaNote(note)}</span>`
     ).join('');
 
@@ -931,13 +950,14 @@ function initHomeVisaGrid() {
         card.classList.add('country-card');
 
         // Generate Visa Tags
-        const tagsHtml = country.visaNotes.map(note =>
+        const tagsHtml = getCountryVisaNotes(country).map(note =>
             `<span class="visa-tag">${formatVisaNote(note)}</span>`
         ).join('');
 
         card.innerHTML = `
             <div class="card-image">
                 <img src="${country.cardImage}" alt="${country.name} scenic view" loading="lazy" referrerpolicy="no-referrer">
+                ${getCountryImageBadgeMarkup(country)}
             </div>
             <div class="card-content">
                 <div class="card-header">

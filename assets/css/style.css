@@ -1829,6 +1829,26 @@ body.modal-open {
     transition: transform 0.5s ease;
 }
 
+.country-image-badge {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.42rem 0.78rem;
+    border-radius: 999px;
+    background: rgba(30, 42, 120, 0.88);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
+}
+
 .country-card:hover .card-image img {
     transform: scale(1.05);
 }
