@@ -1,9 +1,190 @@
+function formatVisaNote(note) {
+    return note === 'Visit' ? 'Family Visit' : note;
+}
+
+function buildWhatsAppLinks(preset) {
+    const phone = ['91', '95949', '60707'].join('');
+    const presets = {
+        visa: "Hi, I'd like to enquire about visa services"
+    };
+    const message = presets[preset] || '';
+    const encodedMessage = encodeURIComponent(message);
+    const nativeLink = encodedMessage
+        ? `whatsapp://send?phone=${phone}&text=${encodedMessage}`
+        : `whatsapp://send?phone=${phone}`;
+    const androidIntent = encodedMessage
+        ? `intent://send?phone=${phone}&text=${encodedMessage}#Intent;scheme=whatsapp;package=com.whatsapp;end`
+        : `intent://send?phone=${phone}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
+    const webLink = encodedMessage
+        ? `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&type=phone_number&app_absent=0`
+        : `https://api.whatsapp.com/send/?phone=${phone}&type=phone_number&app_absent=0`;
+
+    return { nativeLink, androidIntent, webLink };
+}
+
+function getWhatsAppDeviceProfile() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
+    const isAndroid = /Android/i.test(userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+
+    return { isAndroid, isIOS };
+}
+
+function openWhatsAppChat(preset) {
+    const { nativeLink, androidIntent, webLink } = buildWhatsAppLinks(preset);
+    const { isAndroid, isIOS } = getWhatsAppDeviceProfile();
+
+    if (!isAndroid && !isIOS) {
+        window.location.href = webLink;
+        return;
+    }
+
+    const appLink = isAndroid ? androidIntent : nativeLink;
+    const fallbackDelay = isAndroid ? 1800 : 2600;
+    let fallbackTimer = null;
+
+    const cleanup = () => {
+        if (fallbackTimer) {
+            window.clearTimeout(fallbackTimer);
+            fallbackTimer = null;
+        }
+        window.removeEventListener('pagehide', handleLeave);
+        window.removeEventListener('blur', handleLeave);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+
+    const handleLeave = () => cleanup();
+    const handleVisibilityChange = () => {
+        if (document.hidden) cleanup();
+    };
+
+    window.addEventListener('pagehide', handleLeave, { once: true });
+    window.addEventListener('blur', handleLeave, { once: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    fallbackTimer = window.setTimeout(() => {
+        cleanup();
+        if (!document.hidden) {
+            window.location.href = webLink;
+        }
+    }, fallbackDelay);
+
+    window.location.href = appLink;
+}
+
+function initWhatsAppLinks() {
+    document.querySelectorAll('[data-whatsapp]').forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            openWhatsAppChat(link.getAttribute('data-whatsapp'));
+        });
+    });
+}
+
+function getCountryImagePlaceholder(label) {
+    const safeLabel = `${label} scenic view`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+        <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#1e2a78"/>
+                <stop offset="100%" stop-color="#ff6b00"/>
+            </linearGradient>
+        </defs>
+        <rect width="800" height="520" fill="url(#g)"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="34">${safeLabel}</text>
+    </svg>`;
+
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function getCountryImageSources(country, imageType) {
+    if (!country) return [];
+
+    const sources = imageType === 'hero'
+        ? [country.heroImage, country.heroImageBackup]
+        : [country.cardImage, country.cardImageBackup];
+
+    return sources.filter(Boolean);
+}
+
+function setSequentialImageFallback(imageEl, sources, placeholder) {
+    if (!imageEl) return;
+
+    const queue = sources.slice();
+    let currentIndex = 0;
+
+    const applyNext = () => {
+        if (currentIndex < queue.length) {
+            imageEl.src = queue[currentIndex];
+            currentIndex += 1;
+            return;
+        }
+
+        imageEl.src = placeholder;
+    };
+
+    imageEl.addEventListener('error', () => {
+        applyNext();
+    });
+
+    applyNext();
+}
+
+function probeImageSource(sourceUrl) {
+    return new Promise((resolve, reject) => {
+        const probeImage = new Image();
+        probeImage.onload = () => resolve(sourceUrl);
+        probeImage.onerror = () => reject(new Error(`Unable to load ${sourceUrl}`));
+        probeImage.src = sourceUrl;
+    });
+}
+
+function hydrateCountryCardImage(imageEl, country) {
+    if (!imageEl || !country) return;
+
+    setSequentialImageFallback(
+        imageEl,
+        getCountryImageSources(country, 'card'),
+        getCountryImagePlaceholder(country.name)
+    );
+}
+
+async function applyCountryBackgroundImage(element, country, gradientPrefix = '') {
+    if (!element || !country) return;
+    const sources = getCountryImageSources(country, 'hero');
+    const fallbackImage = getCountryImagePlaceholder(country.name);
+
+    const setBackground = (sourceUrl) => {
+        if (!sourceUrl) {
+            element.style.backgroundColor = '#1e2a78';
+            element.style.backgroundImage = gradientPrefix || 'none';
+            return;
+        }
+        element.style.backgroundImage = gradientPrefix
+            ? `${gradientPrefix}, url('${sourceUrl}')`
+            : `url('${sourceUrl}')`;
+    };
+
+    for (const sourceUrl of sources) {
+        try {
+            const resolvedSource = await probeImageSource(sourceUrl);
+            setBackground(resolvedSource);
+            return;
+        } catch (error) {
+            continue;
+        }
+    }
+
+    setBackground(fallbackImage);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
 
     // Load Global Settings (Phone, Email, etc.)
     loadSettings();
+    initWhatsAppLinks();
 
     // Mobile Menu Toggle
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -82,7 +263,7 @@ function injectSchema() {
             "@type": "PostalAddress",
             "addressCountry": "IN"
         },
-        "telephone": "+91 98765 43210",
+        "telephone": "+91 95949 60707",
         "priceRange": "$$"
     };
 
@@ -127,7 +308,7 @@ function initDestinationCarousel() {
         slide.classList.add('carousel-slide');
         if (index === 0) slide.classList.add('active');
 
-        slide.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.7), transparent), url('${country.heroImage}')`;
+        applyCountryBackgroundImage(slide, country, 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)');
 
         slide.innerHTML = `
             <div class="slide-content">
@@ -256,12 +437,12 @@ function initVisaCatalog() {
             card.classList.add('country-card');
             
             const tagsHtml = country.visaNotes.map(note =>
-                `<span class="visa-tag">${note}</span>`
+                `<span class="visa-tag">${formatVisaNote(note)}</span>`
             ).join('');
 
             card.innerHTML = `
                 <div class="card-image">
-                    <img src="${country.cardImage}" alt="${country.name}" loading="lazy">
+                    <img src="${country.cardImage}" alt="${country.name} scenic view" loading="lazy" referrerpolicy="no-referrer">
                 </div>
                 <div class="card-content">
                     <div class="card-header">
@@ -282,6 +463,9 @@ function initVisaCatalog() {
                 e.preventDefault();
                 openCountryModal(country);
             });
+
+            const imageEl = card.querySelector('.card-image img');
+            hydrateCountryCardImage(imageEl, country);
 
             targetGrid.appendChild(card);
         });
@@ -351,12 +535,20 @@ function initVisaCatalog() {
     const modal = document.getElementById('country-modal');
     const closeBtn = document.getElementById('modal-close');
 
-    if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    if (closeBtn) closeBtn.addEventListener('click', closeCountryModal);
     if (modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('active');
+            if (e.target === modal) closeCountryModal();
         });
     }
+}
+
+function closeCountryModal() {
+    const modal = document.getElementById('country-modal');
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
 }
 
 function openCountryModal(country) {
@@ -367,12 +559,12 @@ function openCountryModal(country) {
     const flagEmoji = getFlagEmoji(country.iso2);
     document.getElementById('modal-country-name').textContent = `${flagEmoji} ${country.name}`;
     document.getElementById('modal-name-span').textContent = country.name;
-    document.getElementById('modal-hero-img').style.backgroundImage = `url('${country.cardImage}')`;
+    applyCountryBackgroundImage(document.getElementById('modal-hero-img'), country);
 
     // Tags
     const tagsContainer = document.getElementById('modal-visa-tags');
     tagsContainer.innerHTML = country.visaNotes.map(note =>
-        `<span class="visa-tag">${note}</span>`
+        `<span class="visa-tag">${formatVisaNote(note)}</span>`
     ).join('');
 
     // Inquire Button
@@ -381,6 +573,7 @@ function openCountryModal(country) {
 
     // Show Modal
     modal.classList.add('active');
+    document.body.classList.add('modal-open');
 
     // Set Travel Information
     document.getElementById('modal-pop').textContent = formatPopulation(country.population);
@@ -456,7 +649,7 @@ function initCountryDetail() {
 
     // Hero
     const hero = document.getElementById('country-hero');
-    hero.style.backgroundImage = `var(--gradient-hero), url('${country.heroImage}')`;
+    applyCountryBackgroundImage(hero, country, 'var(--gradient-hero)');
     document.getElementById('country-name').textContent = country.name;
     document.getElementById('country-capital').textContent = country.capital;
     document.getElementById('country-time').textContent = "Local Time";
@@ -479,7 +672,7 @@ function initCountryDetail() {
     // Visa Types
     const visaTypesList = document.getElementById('visa-types-list');
     visaTypesList.innerHTML = country.visaNotes.map(note =>
-        `<span class="visa-tag">${note}</span>`
+        `<span class="visa-tag">${formatVisaNote(note)}</span>`
     ).join('');
 
     // FAQ
@@ -670,12 +863,12 @@ function initHomeVisaGrid() {
 
         // Generate Visa Tags
         const tagsHtml = country.visaNotes.map(note =>
-            `<span class="visa-tag">${note}</span>`
+            `<span class="visa-tag">${formatVisaNote(note)}</span>`
         ).join('');
 
         card.innerHTML = `
             <div class="card-image">
-                <img src="${country.cardImage}" alt="${country.name}" loading="lazy">
+                <img src="${country.cardImage}" alt="${country.name} scenic view" loading="lazy" referrerpolicy="no-referrer">
             </div>
             <div class="card-content">
                 <div class="card-header">
@@ -694,6 +887,9 @@ function initHomeVisaGrid() {
         // Home page cards navigate to the full country detail page
         const detailBtn = card.querySelector('.btn');
         detailBtn.href = `country.html?code=${country.slug}`;
+
+        const imageEl = card.querySelector('.card-image img');
+        hydrateCountryCardImage(imageEl, country);
 
         grid.appendChild(card);
     });
