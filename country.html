@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visa Details - Royal Visa Xpert</title>
+    <meta name="description" content="Detailed visa information and travel guide.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" aria-label="Royal Visa Xpert home">
+                <span class="logo-mark">
+                    <img src="assets/images/RVX Logo.png" alt="Royal Visa Xpert logo">
+                </span>
+                <span class="logo-wordmark">Royal Visa <span>Xpert</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="visas.html" class="nav-link active">Visas</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="whatsapp.html" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us" data-whatsapp="default">
+                    <i data-lucide="message-circle"></i>
+                </a>
+                <a href="enquiry.html" class="btn btn-primary nav-enquiry-btn">Send Enquiry</a>
+            </div>
+
+            <div class="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dynamic Content Container -->
+    <div id="country-content" style="display: none;">
+
+        <!-- Hero Section -->
+        <header class="country-hero" id="country-hero">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content text-center">
+                <h1 id="country-name">Country Name</h1>
+                <div class="country-badges">
+                    <span class="badge"><i data-lucide="map-pin"></i> <span id="country-capital">Capital</span></span>
+                    <span class="badge"><i data-lucide="clock"></i> <span id="country-time">Local Time</span></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="container layout-grid section-padding">
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <!-- Smart Snapshot -->
+                <section class="snapshot-section">
+                    <h2>Travel Snapshot</h2>
+                    <div class="snapshot-grid">
+                        <div class="snapshot-card">
+                            <i data-lucide="navigation" class="icon-primary"></i>
+                            <div>
+                                <h4>Distance</h4>
+                                <p id="dist-val">Calculating...</p>
+                            </div>
+                        </div>
+                        <div class="snapshot-card">
+                            <i data-lucide="cloud-sun" class="icon-primary"></i>
+                            <div>
+                                <h4>Weather (Capital)</h4>
+                                <p id="weather-val">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="snapshot-card">
+                            <i data-lucide="users" class="icon-primary"></i>
+                            <div>
+                                <h4>Population</h4>
+                                <p id="pop-val">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="snapshot-card">
+                            <i data-lucide="calendar" class="icon-primary"></i>
+                            <div>
+                                <h4>Best Season</h4>
+                                <p id="season-val">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Attractions -->
+                <section class="attractions-section">
+                    <h3>Top Attractions</h3>
+                    <ul class="attractions-list" id="attractions-list">
+                        <!-- Dynamic -->
+                    </ul>
+                </section>
+
+                <!-- Visa Info -->
+                <section class="visa-info-section">
+                    <h3>Visa Information</h3>
+                    <div class="info-block">
+                        <h4>Types Offered</h4>
+                        <div class="visa-types-list" id="visa-types-list">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+
+                    <div class="info-block">
+                        <h4>Typical Requirements</h4>
+                        <ul class="checklist">
+                            <li>Valid Passport (6 months validity)</li>
+                            <li>Passport-sized photographs</li>
+                            <li>Bank statements (last 6 months)</li>
+                            <li>Return flight tickets</li>
+                            <li>Hotel accommodation proof</li>
+                        </ul>
+                        <p class="note"><small>* Requirements may vary based on applicant profile.</small></p>
+                    </div>
+                </section>
+
+                <!-- FAQ -->
+                <section class="faq-section">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="accordion" id="faq-list">
+                        <!-- Dynamic -->
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Sidebar Form -->
+            <aside class="sidebar">
+                <div class="sticky-form-card">
+                    <h3>Inquire Now</h3>
+                    <form id="lead-form" class="lead-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="visa-type">Visa Type</label>
+                            <select id="visa-type" required>
+                                <option value="Tourist">Tourist Visa</option>
+                                <option value="Family Visit">Family Visit Visa</option>
+                                <option value="Business">Business Visa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message (Optional)</label>
+                            <textarea id="message" rows="3" placeholder="Planning to travel in December..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Submit Inquiry</button>
+                        <p class="privacy-note">By submitting, you agree to our privacy policy.</p>
+                    </form>
+
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+
+    <!-- 404 / Loading State -->
+    <div id="loading-state" class="container section-padding text-center">
+        <h2>Loading Country Details...</h2>
+    </div>
+
+    <div id="error-state" class="container section-padding text-center" style="display: none;">
+        <h2>Country Not Found</h2>
+        <p>We couldn't find the destination you're looking for.</p>
+        <a href="visas.html" class="btn btn-primary">Back to Catalog</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">Royal Visa <span>Xpert</span></div>
+                <p>Visas, handled with care. Serving applicants across India.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="visas.html">Visas</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p><i data-lucide="mail"></i> <span id="footer-email">Loading...</span></p>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <p>&copy; 2024 Royal Visa Xpert. All rights reserved.</p>
+            <p class="powered-by">Powered by <a href="https://www.quantumstep.in" target="_blank" rel="noopener noreferrer">QuantumStep</a></p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

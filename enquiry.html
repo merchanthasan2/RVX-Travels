@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Enquiry - Royal Visa Xpert</title>
+    <meta name="description" content="Send your visa enquiry to Royal Visa Xpert. We handle your global visa needs with care.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" aria-label="Royal Visa Xpert home">
+                <span class="logo-mark">
+                    <img src="assets/images/RVX Logo.png" alt="Royal Visa Xpert logo">
+                </span>
+                <span class="logo-wordmark">Royal Visa <span>Xpert</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="visas.html" class="nav-link">Visas</a>
+                <a href="index.html#other-services" class="nav-link">Other Services</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="whatsapp.html" target="_blank" class="nav-whatsapp-btn" title="WhatsApp Us" data-whatsapp="default">
+                    <i data-lucide="message-circle"></i>
+                </a>
+                <a href="enquiry.html" class="btn btn-primary nav-enquiry-btn">Send Enquiry</a>
+            </div>
+
+            <div class="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header section-padding text-center">
+        <div class="container">
+            <h1>Send Your Enquiry</h1>
+            <p>Tell us about your travel plans, and our experts will guide you.</p>
+        </div>
+    </header>
+
+    <!-- Enquiry Form Section -->
+    <section class="section-padding enquiry-section">
+        <div class="container enquiry-shell">
+
+            <!-- Success State (hidden by default) -->
+            <div id="form-success" class="enquiry-status enquiry-status-success" style="display: none;">
+                <div class="enquiry-status-icon">
+                    <i data-lucide="check-circle" class="enquiry-status-icon-mark"></i>
+                </div>
+                <h2 class="enquiry-status-title">Enquiry Received!</h2>
+                <p class="enquiry-status-copy">Thank you! We'll get back to you within one business day.</p>
+                <p class="enquiry-status-copy enquiry-status-copy-last">For faster response, you can also reach us on WhatsApp:</p>
+                <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                   rel="noopener noreferrer"
+                   class="btn btn-primary enquiry-status-btn">
+                    <i data-lucide="message-circle"></i> Chat on WhatsApp
+                </a>
+            </div>
+
+            <!-- Error State (hidden by default) -->
+            <div id="form-error" class="enquiry-status enquiry-status-error" style="display: none;">
+                <strong>Something went wrong.</strong> Please try again or message us on WhatsApp.
+            </div>
+
+            <!-- The Form -->
+            <div id="form-container" class="glass-panel enquiry-card">
+                <form id="enquiry-form">
+                    <!-- Honeypot (anti-spam) -->
+                    <input type="text" name="company" style="display:none;" tabindex="-1" autocomplete="off">
+
+                    <div class="enquiry-grid">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="enquiry-grid">
+                        <div class="form-group">
+                            <label for="destination">Destination / Service</label>
+                            <input type="text" id="destination" name="destination" placeholder="Where are you planning to go?" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="visa-type">Visa / Service Type</label>
+                            <select id="visa-type" name="visaType">
+                                <option value="Tourist Visa">Tourist Visa</option>
+                                <option value="Business Visa">Business Visa</option>
+                                <option value="Family Visit Visa">Family Visit Visa</option>
+                                <option value="Urgent Appointment">Urgent Appointment</option>
+                                <option value="Holiday Tour">Holiday Tour</option>
+                                <option value="Destination Wedding">Destination Wedding</option>
+                                <option value="International License">International Driving License</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="enquiry-urgency">
+                        <label class="enquiry-checkbox" for="urgent-service">
+                            <input type="checkbox" id="urgent-service" name="urgentService">
+                            <span class="enquiry-checkbox-copy">
+                                <span class="enquiry-checkbox-title">Urgent Service Required</span>
+                                <span class="enquiry-checkbox-text">Select this if you need priority handling for your visa application.</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="form-group enquiry-message-group">
+                        <label for="message">Your Message / Requirements</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Include any specific questions or additional details..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="btn btn-primary enquiry-submit-btn">
+                        Submit Enquiry
+                    </button>
+
+                    <p class="enquiry-help-note">
+                        Prefer WhatsApp? 
+                        <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                           rel="noopener noreferrer"
+                           class="enquiry-help-link">Chat with us directly</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">Royal Visa <span>Xpert</span></div>
+                <p>Visas, handled with care. Serving applicants across India.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="visas.html">Visas</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Get in Touch</h4>
+                <p><i data-lucide="mail"></i> <span id="footer-email">Loading...</span></p>
+                <p style="margin-top: 0.75rem;">
+                    <a href="whatsapp.html?preset=visa" target="_blank" data-whatsapp="visa"
+                       rel="noopener noreferrer"
+                       class="btn btn-blue" style="width: 100%;">
+                        <i data-lucide="message-circle" style="width:1.25rem;height:1.25rem;"></i> WhatsApp Us
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <p>&copy; 2024 Royal Visa Xpert. All rights reserved.</p>
+            <p class="powered-by">Powered by <a href="https://www.quantumstep.in" target="_blank" rel="noopener noreferrer">QuantumStep</a></p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Auto-fill destination/service from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const dest = urlParams.get('destination');
+        const svc = urlParams.get('service');
+
+        if (dest) {
+            document.getElementById('destination').value = dest;
+        }
+        if (svc) {
+            const serviceMap = {
+                'Tours': 'Holiday Tour',
+                'License': 'International License',
+                'SIM': 'International SIM',
+                'Wedding': 'Destination Wedding',
+                'Urgent': 'Urgent Appointment'
+            };
+            const destField = document.getElementById('destination');
+            const typeField = document.getElementById('visa-type');
+            const mapped = serviceMap[svc] || svc;
+            if (destField && !dest) destField.value = mapped;
+            if (typeField) typeField.value = mapped;
+        }
+
+        // Wire form to backend API
+        document.getElementById('enquiry-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                destination: document.getElementById('destination').value.trim(),
+                visaType: document.getElementById('visa-type').value,
+                urgentService: document.getElementById('urgent-service').checked,
+                message: document.getElementById('message').value.trim(),
+                company: document.querySelector('input[name="company"]').value, // honeypot
+                consent: true
+            };
+
+            try {
+                const response = await fetch('api/inquiry.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('form-error').style.display = 'none';
+                    document.getElementById('form-success').style.display = 'block';
+                    lucide.createIcons();
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (err) {
+                document.getElementById('form-error').style.display = 'block';
+                btn.textContent = 'Submit Enquiry';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
+
