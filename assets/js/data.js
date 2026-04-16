@@ -422,8 +422,10 @@ const visaData = {
             "currency": "EUR (€)",
             "language": "Greek",
             "recommended": true,
-            "heroImage": "https://upload.wikimedia.org/wikipedia/commons/b/bf/2011_Dimos_Thiras.png",
-            "cardImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/2011_Dimos_Thiras.png/330px-2011_Dimos_Thiras.png",
+            "heroImage": "assets/images/countries/greece-hero.jpg",
+            "heroImageBackup": "assets/images/countries/greece-hero-backup.jpg",
+            "cardImage": "assets/images/countries/greece-card.jpg",
+            "cardImageBackup": "assets/images/countries/greece-card-backup.jpg",
             "population": 5000000,
             "seasonTips": [
                 "Apr-Oct"
