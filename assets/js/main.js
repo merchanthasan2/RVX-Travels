@@ -20,6 +20,87 @@ function getCountryImageBadgeMarkup(country) {
     return '<span class="country-image-badge">Schengen Visa</span>';
 }
 
+const PHONE_COUNTRY_CODES = [
+    { code: '+91', label: 'India (+91)' },
+    { code: '+971', label: 'UAE (+971)' },
+    { code: '+1', label: 'USA / Canada (+1)' },
+    { code: '+44', label: 'UK (+44)' },
+    { code: '+61', label: 'Australia (+61)' },
+    { code: '+65', label: 'Singapore (+65)' },
+    { code: '+974', label: 'Qatar (+974)' },
+    { code: '+966', label: 'Saudi Arabia (+966)' },
+    { code: '+968', label: 'Oman (+968)' },
+    { code: '+965', label: 'Kuwait (+965)' },
+    { code: '+973', label: 'Bahrain (+973)' },
+    { code: '+27', label: 'South Africa (+27)' }
+];
+
+function populateCountryCodeSelects(root = document) {
+    root.querySelectorAll('.country-code-select').forEach(select => {
+        if (!select || select.options.length > 0) return;
+
+        PHONE_COUNTRY_CODES.forEach(({ code, label }) => {
+            const option = document.createElement('option');
+            option.value = code;
+            option.textContent = label;
+            if (code === '+91') option.selected = true;
+            select.appendChild(option);
+        });
+    });
+}
+
+function sanitizePhoneNumber(value) {
+    return (value || '').replace(/\D/g, '');
+}
+
+function getPhonePayload(form) {
+    const countryCode = form.querySelector('[name="phoneCountryCode"]')?.value || '+91';
+    const mobileNumberField = form.querySelector('[name="mobileNumber"]');
+    const mobileNumber = sanitizePhoneNumber(mobileNumberField?.value || '');
+
+    if (mobileNumberField) {
+        mobileNumberField.value = mobileNumber;
+    }
+
+    return {
+        phoneCountryCode: countryCode,
+        mobileNumber,
+        phone: `${countryCode}${mobileNumber}`
+    };
+}
+
+function validatePhoneFields(form) {
+    const mobileNumberField = form.querySelector('[name="mobileNumber"]');
+    const countryCodeField = form.querySelector('[name="phoneCountryCode"]');
+
+    if (!mobileNumberField || !countryCodeField) {
+        return true;
+    }
+
+    const mobileNumber = sanitizePhoneNumber(mobileNumberField.value);
+    mobileNumberField.value = mobileNumber;
+    mobileNumberField.setCustomValidity('');
+
+    if (!mobileNumber) {
+        mobileNumberField.setCustomValidity('Enter a mobile number.');
+    } else if (!/^\d{6,15}$/.test(mobileNumber)) {
+        mobileNumberField.setCustomValidity('Enter a valid mobile number using 6 to 15 digits.');
+    }
+
+    if (!countryCodeField.value) {
+        countryCodeField.setCustomValidity('Select a country code.');
+    } else {
+        countryCodeField.setCustomValidity('');
+    }
+
+    const isValid = countryCodeField.reportValidity() && mobileNumberField.reportValidity();
+    if (!isValid) {
+        mobileNumberField.focus();
+    }
+
+    return isValid;
+}
+
 function buildWhatsAppLinks(preset) {
     const phone = ['91', '95949', '60707'].join('');
     const presets = {
@@ -120,6 +201,9 @@ async function submitEnquiryToNetlify(payload) {
         'form-name': 'enquiry',
         name: payload.name || '',
         email: payload.email || '',
+        phoneCountryCode: payload.phoneCountryCode || '+91',
+        mobileNumber: payload.mobileNumber || '',
+        phone: payload.phone || '',
         destination: payload.destination || '',
         visaType: payload.visaType || '',
         urgentService: String(Boolean(payload.urgentService)),
@@ -230,6 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Global Settings (Phone, Email, etc.)
     loadSettings();
     initWhatsAppLinks();
+    populateCountryCodeSelects();
 
     // Mobile Menu Toggle
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -837,6 +922,7 @@ function initCountryLeadForm(country) {
         const payload = {
             name: form.querySelector('#name')?.value?.trim() || '',
             email: form.querySelector('#email')?.value?.trim() || '',
+            ...getPhonePayload(form),
             destination: country.name,
             visaType: form.querySelector('#visa-type')?.value || 'Tourist Visa',
             urgentService: false,
@@ -845,6 +931,14 @@ function initCountryLeadForm(country) {
             consent: true,
             sourcePage: `country:${country.slug}`
         };
+
+        if (!validatePhoneFields(form)) {
+            if (submitButton) {
+                submitButton.textContent = originalLabel;
+                submitButton.disabled = false;
+            }
+            return;
+        }
 
         try {
             await submitEnquiryToNetlify(payload);

@@ -162,6 +162,13 @@
                             <input type="email" id="email" name="email" required placeholder="john@example.com">
                         </div>
                         <div class="form-group">
+                            <label for="mobile-number">Mobile Number</label>
+                            <div class="phone-field-row">
+                                <select id="phone-country-code" name="phoneCountryCode" class="country-code-select phone-country-code" autocomplete="tel-country-code" required aria-label="Country code"></select>
+                                <input type="tel" id="mobile-number" name="mobileNumber" class="phone-number-input" required placeholder="Enter mobile number" inputmode="numeric" autocomplete="tel-national" pattern="[0-9]{6,15}">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="visa-type">Visa Type</label>
                             <select id="visa-type" name="visaType" required>
                                 <option value="Tourist">Tourist Visa</option>

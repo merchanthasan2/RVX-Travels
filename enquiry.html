@@ -123,6 +123,14 @@
                         </div>
                     </div>
 
+                    <div class="form-group form-group--full">
+                        <label for="mobile-number">Mobile Number</label>
+                        <div class="phone-field-row">
+                            <select id="phone-country-code" name="phoneCountryCode" class="country-code-select phone-country-code" autocomplete="tel-country-code" required aria-label="Country code"></select>
+                            <input type="tel" id="mobile-number" name="mobileNumber" class="phone-number-input" placeholder="Enter mobile number" inputmode="numeric" autocomplete="tel-national" pattern="[0-9]{6,15}" required>
+                        </div>
+                    </div>
+
                     <div class="enquiry-urgency">
                         <label class="enquiry-checkbox" for="urgent-service">
                             <input type="checkbox" id="urgent-service" name="urgentService">
@@ -223,9 +231,18 @@
             btn.textContent = 'Sending...';
             btn.disabled = true;
 
+            if (!validatePhoneFields(this)) {
+                btn.textContent = 'Submit Enquiry';
+                btn.disabled = false;
+                return;
+            }
+
+            const phoneDetails = getPhonePayload(this);
+
             const formData = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
+                ...phoneDetails,
                 destination: document.getElementById('destination').value.trim(),
                 visaType: document.getElementById('visa-type').value,
                 urgentService: document.getElementById('urgent-service').checked,
@@ -235,23 +252,9 @@
             };
 
             try {
-                const payload = new URLSearchParams({
-                    'form-name': 'enquiry',
-                    name: formData.name,
-                    email: formData.email,
-                    destination: formData.destination,
-                    visaType: formData.visaType,
-                    urgentService: String(formData.urgentService),
-                    message: formData.message,
-                    company: formData.company,
-                    consent: String(formData.consent),
+                const response = await submitEnquiryToNetlify({
+                    ...formData,
                     sourcePage: 'enquiry'
-                });
-
-                const response = await fetch('/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: payload.toString()
                 });
 
                 if (response.ok) {

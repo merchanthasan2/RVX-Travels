@@ -1427,6 +1427,10 @@ body.modal-open {
         gap: 1rem;
     }
 
+    .phone-field-row {
+        grid-template-columns: 1fr;
+    }
+
     .enquiry-status-success {
         padding: 2rem 1.25rem;
     }
@@ -1443,6 +1447,10 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.form-group--full {
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
@@ -1478,6 +1486,20 @@ body.modal-open {
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 16px;
+}
+
+.phone-field-row {
+    display: grid;
+    grid-template-columns: minmax(148px, 190px) minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+.phone-country-code {
+    padding-right: 2.4rem;
+}
+
+.phone-number-input {
+    letter-spacing: 0.02em;
 }
 
 .enquiry-shell {
