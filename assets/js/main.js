@@ -16,8 +16,8 @@ function buildWhatsAppLinks(preset) {
         ? `intent://send?phone=${phone}&text=${encodedMessage}#Intent;scheme=whatsapp;package=com.whatsapp;end`
         : `intent://send?phone=${phone}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
     const webLink = encodedMessage
-        ? `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&type=phone_number&app_absent=0`
-        : `https://api.whatsapp.com/send/?phone=${phone}&type=phone_number&app_absent=0`;
+        ? `https://web.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&type=phone_number&app_absent=0`
+        : `https://web.whatsapp.com/send/?phone=${phone}&type=phone_number&app_absent=0`;
 
     return { nativeLink, androidIntent, webLink };
 }

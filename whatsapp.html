@@ -95,7 +95,7 @@
             const androidIntent = encodedMessage
                 ? `intent://send?phone=${phone}&text=${encodedMessage}#Intent;scheme=whatsapp;package=com.whatsapp;end`
                 : `intent://send?phone=${phone}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
-            const webLink = `https://api.whatsapp.com/send/${query}`;
+            const webLink = `https://web.whatsapp.com/send/${query}`;
             const appLink = isAndroid ? androidIntent : nativeLink;
             const fallbackDelay = isAndroid ? 1800 : 2600;
 
