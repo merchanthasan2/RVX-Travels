@@ -97,6 +97,33 @@ function getCountryImagePlaceholder(label) {
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
+async function submitEnquiryToNetlify(payload) {
+    const body = new URLSearchParams({
+        'form-name': 'enquiry',
+        name: payload.name || '',
+        email: payload.email || '',
+        destination: payload.destination || '',
+        visaType: payload.visaType || '',
+        urgentService: String(Boolean(payload.urgentService)),
+        message: payload.message || '',
+        company: payload.company || '',
+        consent: String(payload.consent !== false),
+        sourcePage: payload.sourcePage || window.location.pathname
+    });
+
+    const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+    });
+
+    if (!response.ok) {
+        throw new Error(`Enquiry submission failed with status ${response.status}`);
+    }
+
+    return response;
+}
+
 function getCountryImageSources(country, imageType) {
     if (!country) return [];
 
@@ -659,6 +686,7 @@ function initCountryDetail() {
     document.getElementById('season-val').textContent = country.seasonTips.join(', ');
     const formCountryName = document.getElementById('form-country-name');
     if (formCountryName) formCountryName.textContent = country.name;
+    initCountryLeadForm(country);
 
     // Attractions
     const attractionsList = document.getElementById('attractions-list');
@@ -769,6 +797,47 @@ function initCountryDetail() {
         return deg * (Math.PI / 180);
     }
 
+}
+
+function initCountryLeadForm(country) {
+    const form = document.getElementById('lead-form');
+    if (!form || !country || form.dataset.bound === 'true') return;
+
+    form.dataset.bound = 'true';
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalLabel = submitButton ? submitButton.textContent : '';
+
+        if (submitButton) {
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+        }
+
+        const payload = {
+            name: form.querySelector('#name')?.value?.trim() || '',
+            email: form.querySelector('#email')?.value?.trim() || '',
+            destination: country.name,
+            visaType: form.querySelector('#visa-type')?.value || 'Tourist Visa',
+            urgentService: false,
+            message: form.querySelector('#message')?.value?.trim() || '',
+            company: '',
+            consent: true,
+            sourcePage: `country:${country.slug}`
+        };
+
+        try {
+            await submitEnquiryToNetlify(payload);
+            window.location.href = `thank-you.html?destination=${encodeURIComponent(country.name)}`;
+        } catch (error) {
+            window.alert('Something went wrong. Please try again or contact us on WhatsApp.');
+            if (submitButton) {
+                submitButton.textContent = originalLabel;
+                submitButton.disabled = false;
+            }
+        }
+    });
 }
 
 

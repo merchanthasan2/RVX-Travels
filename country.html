@@ -152,18 +152,18 @@
             <aside class="sidebar">
                 <div class="sticky-form-card">
                     <h3>Inquire Now</h3>
-                    <form id="lead-form" class="lead-form">
+                    <form id="lead-form" class="lead-form" name="enquiry-country" method="POST">
                         <div class="form-group">
                             <label for="name">Full Name</label>
-                            <input type="text" id="name" required placeholder="John Doe">
+                            <input type="text" id="name" name="name" required placeholder="John Doe">
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" id="email" required placeholder="john@example.com">
+                            <input type="email" id="email" name="email" required placeholder="john@example.com">
                         </div>
                         <div class="form-group">
                             <label for="visa-type">Visa Type</label>
-                            <select id="visa-type" required>
+                            <select id="visa-type" name="visaType" required>
                                 <option value="Tourist">Tourist Visa</option>
                                 <option value="Family Visit">Family Visit Visa</option>
                                 <option value="Business">Business Visa</option>
@@ -171,7 +171,7 @@
                         </div>
                         <div class="form-group">
                             <label for="message">Message (Optional)</label>
-                            <textarea id="message" rows="3" placeholder="Planning to travel in December..."></textarea>
+                            <textarea id="message" name="message" rows="3" placeholder="Planning to travel in December..."></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block">Submit Inquiry</button>

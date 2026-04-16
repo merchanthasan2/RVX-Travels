@@ -85,7 +85,10 @@
 
             <!-- The Form -->
             <div id="form-container" class="glass-panel enquiry-card">
-                <form id="enquiry-form">
+                <form id="enquiry-form" name="enquiry" method="POST" data-netlify="true" netlify-honeypot="company">
+                    <input type="hidden" name="form-name" value="enquiry">
+                    <input type="hidden" name="sourcePage" value="enquiry">
+                    <input type="hidden" name="consent" value="true">
                     <!-- Honeypot (anti-spam) -->
                     <input type="text" name="company" style="display:none;" tabindex="-1" autocomplete="off">
 
@@ -232,10 +235,23 @@
             };
 
             try {
-                const response = await fetch('api/inquiry.php', {
+                const payload = new URLSearchParams({
+                    'form-name': 'enquiry',
+                    name: formData.name,
+                    email: formData.email,
+                    destination: formData.destination,
+                    visaType: formData.visaType,
+                    urgentService: String(formData.urgentService),
+                    message: formData.message,
+                    company: formData.company,
+                    consent: String(formData.consent),
+                    sourcePage: 'enquiry'
+                });
+
+                const response = await fetch('/', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: payload.toString()
                 });
 
                 if (response.ok) {
