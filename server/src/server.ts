@@ -34,6 +34,8 @@ app.use(
                     "data:",
                     "https://images.unsplash.com",  // Country card & hero images
                     "https://*.unsplash.com",
+                    "https://upload.wikimedia.org", // Country card & hero images
+                    "https://*.wikimedia.org",
                 ],
                 connectSrc: [
                     "'self'",

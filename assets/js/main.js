@@ -350,10 +350,10 @@ function getCountryImagePlaceholder(label) {
 }
 
 const DEFAULT_SITE_SETTINGS = {
-    siteUrl: 'https://rvx-travels.netlify.app',
+    siteUrl: '',
     web3FormsEndpoint: 'https://api.web3forms.com/submit',
     web3FormsAccessKey: '',
-    defaultOgImage: 'https://rvx-travels.netlify.app/assets/img/service_visa.png',
+    defaultOgImage: 'assets/img/service_visa.png',
     brandName: 'Royal Visa Xpert',
     phone: '+91 95949 60707',
     analytics: {
@@ -361,11 +361,25 @@ const DEFAULT_SITE_SETTINGS = {
     }
 };
 
+function getRuntimeOrigin() {
+    if (typeof window === 'undefined' || !window.location) return '';
+    const origin = (window.location.origin || '').trim();
+    if (!/^https?:\/\//i.test(origin)) return '';
+    return origin.replace(/\/+$/, '');
+}
+
 function getSiteSettings() {
     const sourceSettings = (typeof visaData !== 'undefined' && visaData.settings) ? visaData.settings : {};
+    const configuredSiteUrl = typeof sourceSettings.siteUrl === 'string'
+        ? sourceSettings.siteUrl.trim().replace(/\/+$/, '')
+        : '';
+    const runtimeOrigin = getRuntimeOrigin();
+    const resolvedSiteUrl = configuredSiteUrl || runtimeOrigin;
+
     return {
         ...DEFAULT_SITE_SETTINGS,
         ...sourceSettings,
+        siteUrl: resolvedSiteUrl,
         analytics: {
             ...DEFAULT_SITE_SETTINGS.analytics,
             ...(sourceSettings.analytics || {})
@@ -379,12 +393,14 @@ function getCurrentPageName() {
 }
 
 function getAbsoluteUrl(pathOrUrl) {
-    if (!pathOrUrl) return getSiteSettings().siteUrl;
+    const settings = getSiteSettings();
+    const siteUrl = settings.siteUrl || getRuntimeOrigin();
+
+    if (!pathOrUrl) return siteUrl;
     if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
 
-    const siteUrl = getSiteSettings().siteUrl.replace(/\/+$/, '');
     const normalizedPath = pathOrUrl.replace(/^\/+/, '');
-    return `${siteUrl}/${normalizedPath}`;
+    return siteUrl ? `${siteUrl}/${normalizedPath}` : normalizedPath;
 }
 
 function ensureMetaTag(attributeName, attributeValue, content) {

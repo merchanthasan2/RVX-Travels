@@ -30,7 +30,10 @@ function buildAbsoluteUrl(siteUrl, relativePath) {
 
 function main() {
     const visaData = loadVisaData();
-    const siteUrl = visaData.settings?.siteUrl || 'https://rvx-travels.netlify.app';
+    const siteUrl = (process.env.SITE_URL || visaData.settings?.siteUrl || '').trim();
+    if (!siteUrl) {
+        throw new Error('SITE_URL is required. Set visaData.settings.siteUrl or pass SITE_URL in the environment.');
+    }
     const lastMod = new Date().toISOString().slice(0, 10);
 
     const staticPages = [
@@ -38,6 +41,7 @@ function main() {
         'visas.html',
         'about.html',
         'enquiry.html',
+        'international-driving-license.html',
         'privacy.html',
         'terms.html'
     ];
