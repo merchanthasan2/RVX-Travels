@@ -41,6 +41,7 @@ app.use(
                     "https://api.open-meteo.com",
                     "https://api.waqi.info",
                     "https://ipapi.co",
+                    "https://api.web3forms.com",
                 ],
                 frameSrc: ["'none'"],
                 objectSrc: ["'none'"],
@@ -53,6 +54,7 @@ app.use(cors({
     origin: process.env.ALLOWED_ORIGIN || '*', // Lock to origin in prod
     methods: ['POST']
 }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Routes

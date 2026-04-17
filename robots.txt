@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rvx-travels.netlify.app/sitemap.xml

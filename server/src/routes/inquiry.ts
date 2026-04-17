@@ -7,28 +7,39 @@ import path from 'path';
 
 const router = Router();
 
-// Rate Limiter: 5 requests per minute per IP
+const booleanField = (defaultValue: boolean) =>
+    z.preprocess((value) => {
+        if (typeof value === 'boolean') return value;
+        if (typeof value === 'string') {
+            const normalized = value.trim().toLowerCase();
+            return normalized === 'true' || normalized === '1' || normalized === 'on' || normalized === 'yes';
+        }
+        return defaultValue;
+    }, z.boolean()).optional().default(defaultValue);
+
+// Rate limiter: 5 requests per minute per IP
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 5,
     message: { error: 'Too many requests, please try again later.' }
 });
 
-// Validation Schema (phone is optional — not collected on frontend)
 const inquirySchema = z.object({
     name: z.string().min(2).max(100),
     email: z.string().email().or(z.literal('')),
-    phone: z.string().optional().default('Not provided'),
+    phoneCountryCode: z.string().min(1).optional().default('+91'),
+    mobileNumber: z.string().regex(/^\d{6,15}$/).optional().default(''),
+    phone: z.string().optional().default(''),
     visaType: z.string().min(1),
     destination: z.string().min(1),
-    urgentService: z.boolean().optional().default(false),
+    urgentService: booleanField(false),
     message: z.string().max(1000).optional().default(''),
-    consent: z.boolean().optional().default(true),
-    company: z.string().max(0).optional() // Honeypot: must be empty
+    consent: booleanField(true),
+    company: z.string().max(0).optional(),
+    sourcePage: z.string().max(120).optional().default('')
 });
 
-// Logger
-const logInquiry = (data: any) => {
+const logInquiry = (data: z.infer<typeof inquirySchema>) => {
     const logDir = path.join(__dirname, '../../logs');
     if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 
@@ -39,6 +50,7 @@ const logInquiry = (data: any) => {
         destination: data.destination,
         visaType: data.visaType,
         urgentService: Boolean(data.urgentService),
+        sourcePage: data.sourcePage || 'unknown',
         maskedEmail
     };
 
@@ -47,32 +59,30 @@ const logInquiry = (data: any) => {
 
 router.post('/', limiter, async (req: Request, res: Response) => {
     try {
-        // 1. Honeypot Check
         if (req.body.company) {
             console.warn(`Bot detected from IP: ${req.ip}`);
             return res.status(400).json({ error: 'Invalid submission' });
         }
 
-        // 2. Validation
         const validatedData = inquirySchema.parse(req.body);
+        const normalizedPhone = validatedData.phone || `${validatedData.phoneCountryCode}${validatedData.mobileNumber}` || 'Not provided';
 
-        // 3. Send Email
         await sendInquiryEmail({
             ...validatedData,
+            phone: normalizedPhone,
             ip: req.ip || 'Unknown'
         });
 
-        // 4. Log (Masked)
         logInquiry(validatedData);
 
-        res.status(200).json({ success: true, message: 'Inquiry received' });
-
+        return res.status(200).json({ success: true, message: 'Inquiry received' });
     } catch (error) {
         if (error instanceof z.ZodError) {
             return res.status(400).json({ error: 'Validation failed', details: error.errors });
         }
+
         console.error('Inquiry Error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: error instanceof Error ? error.message : 'Internal server error' });
     }
 });
 

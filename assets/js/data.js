@@ -2130,6 +2130,15 @@ const visaData = {
         }
     ],
     "settings": {
+        "siteUrl": "https://rvx-travels.netlify.app",
+        "web3FormsEndpoint": "https://api.web3forms.com/submit",
+        "web3FormsAccessKey": "0ad644f5-58b0-4746-a4d5-c579abfd5fda",
+        "defaultOgImage": "https://rvx-travels.netlify.app/assets/img/service_visa.png",
+        "brandName": "Royal Visa Xpert",
+        "phone": "+91 95949 60707",
+        "analytics": {
+            "ga4MeasurementId": ""
+        },
         "email": "info@rvxtravels.com",
         "hours": "Mon-Sat: 10:00 AM - 7:00 PM IST"
     }

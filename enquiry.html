@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send Enquiry - Royal Visa Xpert</title>
     <meta name="description" content="Send your visa enquiry to Royal Visa Xpert. We handle your global visa needs with care.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#1e2a78">
+    <link rel="canonical" href="https://rvx-travels.netlify.app/enquiry.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Royal Visa Xpert">
+    <meta property="og:title" content="Send Enquiry - Royal Visa Xpert">
+    <meta property="og:description" content="Send your visa or travel enquiry to Royal Visa Xpert for tourist, family visit, business and related travel services.">
+    <meta property="og:url" content="https://rvx-travels.netlify.app/enquiry.html">
+    <meta property="og:image" content="https://rvx-travels.netlify.app/assets/img/service_visa.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Send Enquiry - Royal Visa Xpert">
+    <meta name="twitter:description" content="Send your visa or travel enquiry to Royal Visa Xpert for tourist, family visit, business and related travel services.">
+    <meta name="twitter:image" content="https://rvx-travels.netlify.app/assets/img/service_visa.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,8 +98,7 @@
 
             <!-- The Form -->
             <div id="form-container" class="glass-panel enquiry-card">
-                <form id="enquiry-form" name="enquiry" method="POST" data-netlify="true" netlify-honeypot="company">
-                    <input type="hidden" name="form-name" value="enquiry">
+                <form id="enquiry-form" name="enquiry" method="POST">
                     <input type="hidden" name="sourcePage" value="enquiry">
                     <input type="hidden" name="consent" value="true">
                     <!-- Honeypot (anti-spam) -->
@@ -110,14 +122,14 @@
                         </div>
                         <div class="form-group">
                             <label for="visa-type">Visa / Service Type</label>
-                            <select id="visa-type" name="visaType">
+                            <select id="visa-type" name="visaType" required>
+                                <option value="" selected disabled>Select visa / service type</option>
                                 <option value="Tourist Visa">Tourist Visa</option>
                                 <option value="Business Visa">Business Visa</option>
                                 <option value="Family Visit Visa">Family Visit Visa</option>
-                                <option value="Urgent Appointment">Urgent Appointment</option>
                                 <option value="Holiday Tour">Holiday Tour</option>
                                 <option value="Destination Wedding">Destination Wedding</option>
-                                <option value="International License">International Driving License</option>
+                                <option value="International Driving License (Permit)">International Driving License (Permit)</option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>
@@ -212,25 +224,28 @@
         if (svc) {
             const serviceMap = {
                 'Tours': 'Holiday Tour',
-                'License': 'International License',
-                'Wedding': 'Destination Wedding',
-                'Urgent': 'Urgent Appointment'
+                'License': 'International Driving License (Permit)',
+                'IDP': 'International Driving License (Permit)',
+                'Wedding': 'Destination Wedding'
             };
             const destField = document.getElementById('destination');
             const typeField = document.getElementById('visa-type');
+            const urgentField = document.getElementById('urgent-service');
             const mapped = serviceMap[svc] || svc;
             if (destField && !dest) destField.value = mapped;
             if (typeField) typeField.value = mapped;
+            if (svc === 'Urgent' && urgentField) urgentField.checked = true;
         }
 
         // Wire form to backend API
         document.getElementById('enquiry-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
+            document.getElementById('form-error').style.display = 'none';
             btn.textContent = 'Sending...';
             btn.disabled = true;
 
-            if (!validatePhoneFields(this)) {
+            if (!validateInquiryForm(this)) {
                 btn.textContent = 'Submit Enquiry';
                 btn.disabled = false;
                 return;
@@ -251,7 +266,7 @@
             };
 
             try {
-                const response = await submitEnquiryToNetlify({
+                const response = await submitInquiry({
                     ...formData,
                     sourcePage: 'enquiry'
                 });
@@ -265,6 +280,11 @@
                     throw new Error('Server error');
                 }
             } catch (err) {
+                const errorBox = document.getElementById('form-error');
+                const errorMessage = err instanceof Error
+                    ? err.message
+                    : 'Unable to send your enquiry right now. Please try again or message us on WhatsApp.';
+                errorBox.textContent = errorMessage;
                 document.getElementById('form-error').style.display = 'block';
                 btn.textContent = 'Submit Enquiry';
                 btn.disabled = false;

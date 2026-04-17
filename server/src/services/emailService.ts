@@ -1,16 +1,9 @@
-/**
- * emailService.ts
- * Pure Node.js SMTP client — no external packages required.
- * Uses the built-in `net` and `tls` modules with STARTTLS on port 587.
- */
 import net from 'net';
 import tls from 'tls';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface InquiryData {
     name: string;
@@ -21,6 +14,7 @@ export interface InquiryData {
     urgentService?: boolean;
     message: string;
     ip: string;
+    sourcePage?: string;
 }
 
 interface SmtpMessage {
@@ -30,36 +24,35 @@ interface SmtpMessage {
     text: string;
 }
 
-// ─── SMTP Client ─────────────────────────────────────────────────────────────
-
-const b64 = (s: string) => Buffer.from(s).toString('base64');
+const b64 = (value: string) => Buffer.from(value).toString('base64');
 const CRLF = '\r\n';
 
 function buildMime(from: string, to: string, subject: string, html: string, text: string): string {
-    const id = crypto.randomBytes(12).toString('hex');
+    const boundary = crypto.randomBytes(12).toString('hex');
+
     return [
         `Date: ${new Date().toUTCString()}`,
         `From: "Royal Visa Xpert" <${from}>`,
         `To: ${to}`,
         `Subject: =?UTF-8?B?${b64(subject)}?=`,
-        `MIME-Version: 1.0`,
-        `Content-Type: multipart/alternative; boundary="${id}"`,
-        ``,
-        `--${id}`,
-        `Content-Type: text/plain; charset=UTF-8`,
-        ``,
+        'MIME-Version: 1.0',
+        `Content-Type: multipart/alternative; boundary="${boundary}"`,
+        '',
+        `--${boundary}`,
+        'Content-Type: text/plain; charset=UTF-8',
+        '',
         text,
-        ``,
-        `--${id}`,
-        `Content-Type: text/html; charset=UTF-8`,
-        ``,
+        '',
+        `--${boundary}`,
+        'Content-Type: text/html; charset=UTF-8',
+        '',
         html,
-        ``,
-        `--${id}--`,
+        '',
+        `--${boundary}--`
     ].join(CRLF);
 }
 
-function sendSmtp(msg: SmtpMessage): Promise<void> {
+function sendSmtp(message: SmtpMessage): Promise<void> {
     return new Promise((resolve, reject) => {
         const host = process.env.SMTP_HOST || 'smtp.gmail.com';
         const port = parseInt(process.env.SMTP_PORT || '587', 10);
@@ -67,156 +60,217 @@ function sendSmtp(msg: SmtpMessage): Promise<void> {
         const pass = process.env.SMTP_PASS || '';
         const from = process.env.MAIL_FROM || user;
 
-        const mime = buildMime(from, msg.to, msg.subject, msg.html, msg.text);
+        if (!user || !pass || !from) {
+            reject(new Error('SMTP configuration is incomplete. Set SMTP_USER, SMTP_PASS, and MAIL_FROM.'));
+            return;
+        }
+
+        const mime = buildMime(from, message.to, message.subject, message.html, message.text);
 
         let step = 0;
-        let buf = '';
-        let tlsSock: tls.TLSSocket | null = null;
+        let buffer = '';
+        let tlsSocket: tls.TLSSocket | null = null;
         let settled = false;
 
-        const done = (err?: Error) => {
+        const finish = (error?: Error) => {
             if (settled) return;
             settled = true;
-            try { plainSock.destroy(); } catch (_) {}
-            err ? reject(err) : resolve();
+
+            try {
+                plainSocket.destroy();
+            } catch (destroyError) {
+                // Ignore shutdown errors during cleanup.
+            }
+
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve();
         };
 
-        const write = (cmd: string) => {
-            const sock: net.Socket | tls.TLSSocket = tlsSock ?? plainSock;
-            sock.write(cmd + CRLF);
+        const write = (command: string) => {
+            const socket: net.Socket | tls.TLSSocket = tlsSocket ?? plainSocket;
+            socket.write(command + CRLF);
+        };
+
+        const processData = (chunk: Buffer) => {
+            buffer += chunk.toString('utf8');
+            const lines = buffer.split(CRLF);
+            buffer = lines.pop() ?? '';
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                handleLine(line);
+            }
         };
 
         const handleLine = (line: string) => {
-            if (!line.trim()) return;
             const code = parseInt(line.slice(0, 3), 10);
-            if (line[3] === '-') return; // Multiline continuation — wait for last line
+            if (line[3] === '-') return;
 
             try {
                 switch (step) {
-                    case 0: // 220 greeting
-                        if (code === 220) { step = 1; write('EHLO client'); }
-                        else done(new Error(`Greeting: ${line}`));
-                        break;
-
-                    case 1: // 250 EHLO capabilities
-                        if (code === 250) { step = 2; write('STARTTLS'); }
-                        else done(new Error(`EHLO: ${line}`));
-                        break;
-
-                    case 2: // 220 ready for TLS
+                    case 0:
                         if (code === 220) {
-                            step = 3; // Transitioning — pause plain socket reading
-                            tlsSock = tls.connect(
-                                { socket: plainSock, host, servername: host },
+                            step = 1;
+                            write('EHLO client');
+                        } else {
+                            finish(new Error(`Greeting: ${line}`));
+                        }
+                        break;
+
+                    case 1:
+                        if (code === 250) {
+                            step = 2;
+                            write('STARTTLS');
+                        } else {
+                            finish(new Error(`EHLO: ${line}`));
+                        }
+                        break;
+
+                    case 2:
+                        if (code === 220) {
+                            step = 3;
+                            tlsSocket = tls.connect(
+                                { socket: plainSocket, host, servername: host },
                                 () => {
                                     step = 4;
-                                    write('EHLO client'); // Re-EHLO over TLS
-                                    tlsSock!.on('data', (d: Buffer) => processData(d));
+                                    write('EHLO client');
+                                    tlsSocket!.on('data', processData);
                                 }
                             );
-                            tlsSock.on('error', (e) => done(e));
-                        } else done(new Error(`STARTTLS: ${line}`));
+                            tlsSocket.on('error', finish);
+                        } else {
+                            finish(new Error(`STARTTLS: ${line}`));
+                        }
                         break;
 
-                    case 3: break; // TLS handshake in progress
-
-                    case 4: // 250 EHLO over TLS
-                        if (code === 250) { step = 5; write('AUTH LOGIN'); }
-                        else done(new Error(`TLS EHLO: ${line}`));
+                    case 3:
                         break;
 
-                    case 5: // 334 username prompt
-                        if (code === 334) { step = 6; write(b64(user)); }
-                        else done(new Error(`AUTH LOGIN: ${line}`));
+                    case 4:
+                        if (code === 250) {
+                            step = 5;
+                            write('AUTH LOGIN');
+                        } else {
+                            finish(new Error(`TLS EHLO: ${line}`));
+                        }
                         break;
 
-                    case 6: // 334 password prompt
-                        if (code === 334) { step = 7; write(b64(pass)); }
-                        else done(new Error(`Username send: ${line}`));
+                    case 5:
+                        if (code === 334) {
+                            step = 6;
+                            write(b64(user));
+                        } else {
+                            finish(new Error(`AUTH LOGIN: ${line}`));
+                        }
                         break;
 
-                    case 7: // 235 auth success
-                        if (code === 235) { step = 8; write(`MAIL FROM:<${from}>`); }
-                        else done(new Error(`Auth failed (wrong credentials?): ${line}`));
+                    case 6:
+                        if (code === 334) {
+                            step = 7;
+                            write(b64(pass));
+                        } else {
+                            finish(new Error(`Username send: ${line}`));
+                        }
                         break;
 
-                    case 8: // 250 MAIL FROM
-                        if (code === 250) { step = 9; write(`RCPT TO:<${msg.to}>`); }
-                        else done(new Error(`MAIL FROM: ${line}`));
+                    case 7:
+                        if (code === 235) {
+                            step = 8;
+                            write(`MAIL FROM:<${from}>`);
+                        } else {
+                            finish(new Error(`Auth failed: ${line}`));
+                        }
                         break;
 
-                    case 9: // 250 RCPT TO
-                        if (code === 250) { step = 10; write('DATA'); }
-                        else done(new Error(`RCPT TO: ${line}`));
+                    case 8:
+                        if (code === 250) {
+                            step = 9;
+                            write(`RCPT TO:<${message.to}>`);
+                        } else {
+                            finish(new Error(`MAIL FROM: ${line}`));
+                        }
                         break;
 
-                    case 10: // 354 start input
-                        if (code === 354) { step = 11; write(mime + CRLF + '.'); }
-                        else done(new Error(`DATA: ${line}`));
+                    case 9:
+                        if (code === 250) {
+                            step = 10;
+                            write('DATA');
+                        } else {
+                            finish(new Error(`RCPT TO: ${line}`));
+                        }
                         break;
 
-                    case 11: // 250 message accepted
-                        if (code === 250) { step = 12; write('QUIT'); }
-                        else done(new Error(`Message send: ${line}`));
+                    case 10:
+                        if (code === 354) {
+                            step = 11;
+                            write(mime + CRLF + '.');
+                        } else {
+                            finish(new Error(`DATA: ${line}`));
+                        }
                         break;
 
-                    case 12: // 221 goodbye
-                        done();
+                    case 11:
+                        if (code === 250) {
+                            step = 12;
+                            write('QUIT');
+                        } else {
+                            finish(new Error(`Message send: ${line}`));
+                        }
+                        break;
+
+                    case 12:
+                        finish();
                         break;
 
                     default:
-                        done(new Error(`Unexpected state ${step}: ${line}`));
+                        finish(new Error(`Unexpected state ${step}: ${line}`));
+                        break;
                 }
-            } catch (err: any) {
-                done(err);
+            } catch (error) {
+                finish(error instanceof Error ? error : new Error(String(error)));
             }
         };
 
-        const processData = (d: Buffer) => {
-            buf += d.toString('utf8');
-            const lines = buf.split('\r\n');
-            buf = lines.pop() ?? '';
-            for (const line of lines) {
-                if (line) handleLine(line);
+        const plainSocket = net.createConnection(port, host);
+        plainSocket.setTimeout(20000);
+        plainSocket.on('timeout', () => finish(new Error('SMTP timeout')));
+        plainSocket.on('error', finish);
+        plainSocket.on('data', (chunk: Buffer) => {
+            if (step < 3) {
+                processData(chunk);
             }
-        };
-
-        // Create plain TCP connection first (STARTTLS begins as plaintext on 587)
-        const plainSock = net.createConnection(port, host);
-        plainSock.setTimeout(20000);
-        plainSock.on('timeout', () => done(new Error('SMTP timeout')));
-        plainSock.on('error', (e) => done(e));
-        plainSock.on('data', (d: Buffer) => {
-            if (step < 3) processData(d); // Pre-TLS only
         });
     });
 }
 
-// ─── Public API ───────────────────────────────────────────────────────────────
-
 export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-    const adminTo  = process.env.MAIL_TO || 'info@rvxtravels.com';
+    const adminTo = process.env.MAIL_TO || 'info@rvxtravels.com';
     const urgencyLabel = data.urgentService ? 'Yes - priority requested' : 'No';
     const adminSubjectPrefix = data.urgentService ? 'Urgent Enquiry' : 'New Enquiry';
     const userUrgencyLine = data.urgentService
         ? '<p><strong>Urgent service requested:</strong> Yes. We will prioritize the review of your enquiry.</p>'
         : '';
 
-    // ── Admin notification ──────────────────────────────────────────
     const adminHtml = `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
   <div style="background:#1e2a78;color:white;padding:24px;border-radius:8px 8px 0 0;">
-    <h2 style="margin:0;">📩 New Enquiry — Royal Visa Xpert</h2>
+    <h2 style="margin:0;">New Enquiry - Royal Visa Xpert</h2>
   </div>
   <div style="background:#f9fafb;padding:24px;border-radius:0 0 8px 8px;border:1px solid #e5e7eb;">
     <table style="width:100%;border-collapse:collapse;">
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;width:35%;">Name</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.name}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Email</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.email || 'Not provided'}</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Phone</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.phone || 'Not provided'}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Destination</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.destination}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Service / Type</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.visaType}</td></tr>
       <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Urgent Service</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${urgencyLabel}</td></tr>
-      <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Message</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.message || '—'}</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Message</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.message || '-'}</td></tr>
+      <tr><td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:bold;">Source Page</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;">${data.sourcePage || 'Unknown'}</td></tr>
       <tr><td style="padding:10px;font-weight:bold;">Submitted (IST)</td><td style="padding:10px;">${timestamp}</td></tr>
     </table>
     <div style="margin-top:24px;text-align:center;">
@@ -225,13 +279,24 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
   </div>
 </div>`;
 
-    const adminText = `New Enquiry\nName: ${data.name}\nEmail: ${data.email}\nDestination: ${data.destination}\nType: ${data.visaType}\nUrgent Service: ${urgencyLabel}\nMessage: ${data.message}\nTime (IST): ${timestamp}`;
+    const adminText = `New Enquiry
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone || 'Not provided'}
+Destination: ${data.destination}
+Type: ${data.visaType}
+Urgent Service: ${urgencyLabel}
+Message: ${data.message}
+Source Page: ${data.sourcePage || 'Unknown'}
+Time (IST): ${timestamp}`;
 
-    // ── Send admin notification ─────────────────────────────────────
-    await sendSmtp({ to: adminTo, subject: `${adminSubjectPrefix}: ${data.destination} — ${data.visaType}`, html: adminHtml, text: adminText });
-    console.log(`✅ Admin email sent to ${adminTo}`);
+    await sendSmtp({
+        to: adminTo,
+        subject: `${adminSubjectPrefix}: ${data.destination} - ${data.visaType}`,
+        html: adminHtml,
+        text: adminText
+    });
 
-    // ── User auto-acknowledgement (only if email provided) ──────────
     if (data.email && data.email.includes('@')) {
         const userHtml = `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
@@ -250,10 +315,9 @@ export const sendInquiryEmail = async (data: InquiryData): Promise<void> => {
 
         await sendSmtp({
             to: data.email,
-            subject: `We received your enquiry for ${data.destination} — Royal Visa Xpert`,
+            subject: `We received your enquiry for ${data.destination} - Royal Visa Xpert`,
             html: userHtml,
             text: `Hi ${data.name}, we received your enquiry for ${data.destination}.${data.urgentService ? ' You requested urgent service and we will prioritize the review.' : ''} We'll be in touch within one business day.`
         });
-        console.log(`✅ Ack email sent to ${data.email}`);
     }
 };
