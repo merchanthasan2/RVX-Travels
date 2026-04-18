@@ -47,8 +47,8 @@
     --transition-normal: 0.3s ease-in-out;
 
     /* Navigation */
-    --navbar-height: 112px;
-    --navbar-logo-size: 112px;
+    --navbar-height: 96px;
+    --navbar-logo-size: 74px;
     --navbar-logo-overlap: 0px;
 }
 
@@ -276,6 +276,7 @@ img {
     justify-content: space-between;
     align-items: center;
     min-height: var(--navbar-height);
+    gap: 1rem;
 }
 
 .navbar .logo {
@@ -288,24 +289,29 @@ img {
     color: var(--color-primary);
     line-height: 1;
     flex-shrink: 0;
+    min-height: 0;
 }
 
 .navbar .logo-mark {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: calc(var(--navbar-logo-size) + 8px);
-    margin: 0 0 calc(var(--navbar-logo-overlap) * -1) -0.5rem;
+    width: var(--navbar-logo-size);
+    height: var(--navbar-logo-size);
+    margin: 0;
     background: transparent;
-    flex-shrink: 0;
+    flex: 0 0 var(--navbar-logo-size);
+    overflow: hidden;
 }
 
 .navbar .logo-mark img {
-    width: var(--navbar-logo-size);
-    height: auto;
+    width: 100%;
+    height: 100%;
+    max-width: none;
     object-fit: contain;
     background: transparent;
     filter: drop-shadow(0 8px 16px rgba(30, 42, 120, 0.16));
+    display: block;
 }
 
 .navbar .logo-wordmark {
@@ -341,11 +347,12 @@ img {
     z-index: 2;
     text-align: center;
     max-width: 800px;
+    transform: translateY(-1.15rem);
 }
 
 .hero-brand {
     font-family: var(--font-heading);
-    font-size: 4.25rem;
+    font-size: 4.75rem;
     font-weight: 600;
     line-height: 1.1;
     color: var(--color-primary);
@@ -620,6 +627,7 @@ img {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
+    align-items: start;
 }
 
 .footer-brand .logo {
@@ -688,7 +696,7 @@ img {
     }
 
     .hero-brand {
-        font-size: 3rem;
+        font-size: 3.35rem;
         margin-bottom: 1.9rem;
     }
 
@@ -903,14 +911,35 @@ img {
 /* --- Page Header --- */
 .page-header {
     background: var(--color-cool-gray);
-    padding-top: 120px;
-    /* Navbar + spacing */
-    padding-bottom: var(--spacing-lg);
+    padding-top: calc(var(--navbar-height) + 2rem);
+    padding-bottom: 2rem;
+}
+
+.page-header.section-padding {
+    padding-top: calc(var(--navbar-height) + 2rem);
+    padding-bottom: 2rem;
+}
+
+.page-header .container {
+    max-width: 960px;
 }
 
 .page-header h1 {
     font-size: 2.5rem;
     margin-bottom: var(--spacing-xs);
+    line-height: 1.1;
+}
+
+.page-header p {
+    max-width: 820px;
+    margin: 0.85rem auto 0;
+    color: var(--color-text-body);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.page-header + .section-padding {
+    padding-top: 2.25rem;
 }
 
 .country-badges {
@@ -1010,7 +1039,7 @@ img {
 }
 
 .about-intro-copy {
-    max-width: 500px;
+    max-width: 560px;
 }
 
 .about-intro-copy h2 {
@@ -1063,6 +1092,10 @@ img {
     font-weight: 600;
     font-size: 0.95rem;
     line-height: 1.35;
+}
+
+.about-highlights li::after {
+    content: '\2713';
 }
 
 .about-highlights li::before {
@@ -1458,6 +1491,8 @@ body.modal-open {
     display: flex;
     gap: var(--spacing-lg);
     align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
 }
 
 .nav-link {
@@ -1497,8 +1532,8 @@ body.modal-open {
 
 @media (max-width: 768px) {
     :root {
-        --navbar-height: 86px;
-        --navbar-logo-size: 82px;
+        --navbar-height: 82px;
+        --navbar-logo-size: 62px;
         --navbar-logo-overlap: 0px;
     }
 
@@ -1513,7 +1548,8 @@ body.modal-open {
 
     .navbar .logo-mark {
         width: var(--navbar-logo-size);
-        margin-left: -0.25rem;
+        height: var(--navbar-logo-size);
+        margin-left: 0;
     }
 
     .nav-links {
@@ -2124,7 +2160,10 @@ body {
     width: 100%;
 }
 
-* {
+img,
+video,
+canvas,
+svg {
     max-width: 100%;
 }
 
@@ -2158,6 +2197,10 @@ body {
     .hero {
         height: auto;
         padding: 120px 0 60px;
+    }
+
+    .hero-content {
+        transform: translateY(-0.6rem);
     }
 
     .hero-title {
@@ -2250,6 +2293,15 @@ body {
         font-size: 2rem;
     }
 
+    .page-header.section-padding {
+        padding-top: calc(var(--navbar-height) + 1.5rem);
+        padding-bottom: 1.5rem;
+    }
+
+    .page-header + .section-padding {
+        padding-top: 1.5rem;
+    }
+
     .country-badges {
         gap: 0.65rem;
     }
@@ -2331,8 +2383,12 @@ body {
 
 @media (max-width: 480px) {
     .hero-brand {
-        font-size: 2.2rem;
+        font-size: 2.45rem;
         margin-bottom: 1.5rem;
+    }
+
+    .hero-content {
+        transform: translateY(-0.35rem);
     }
 
     .cta-section {
@@ -2361,11 +2417,13 @@ body {
     }
 
     .navbar .logo-mark {
-        width: 62px;
+        width: 52px;
+        height: 52px;
     }
 
     .navbar .logo-mark img {
-        width: 62px;
+        width: 100%;
+        height: 100%;
     }
 
     .nav-whatsapp-btn {
@@ -2477,6 +2535,8 @@ img {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    margin-left: auto;
+    justify-content: flex-end;
 }
 
 .nav-whatsapp-btn {
